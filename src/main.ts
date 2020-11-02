@@ -24,7 +24,7 @@ CSV Links: ${output.csvLinks}`
 	rl.close();
 });
 
-const truncateFileName = (fileName: string) => {
+const truncateFileName = (name: string) => {
 	// return fileName.substring(0, fileName.lastIndexOf(' ')) + fileName.substring(fileName.indexOf('.'));
 	let basename = npath.basename(name);
 	basename = basename.lastIndexOf(' ') > 0 ? basename.substring(0, basename.lastIndexOf(' ')) : basename;
@@ -36,7 +36,7 @@ const truncateFileName = (fileName: string) => {
 	);
 };
 
-const truncateDirName = (directoryName: string) => {
+const truncateDirName = (name: string) => {
 	// return directoryName.substring(0, directoryName.lastIndexOf(' '));
 	let basename = npath.basename(name);
 	basename = basename.lastIndexOf(' ') > 0 ? basename.substring(0, basename.lastIndexOf(' ')) : basename;
@@ -49,11 +49,12 @@ const truncateDirName = (directoryName: string) => {
 };
 
 //* [Link Text](Link Directory + uuid/And Page Name + uuid) => [[LinkText]]
-const convertMarkdownLinks = (content: string) => {
+export const convertMarkdownLinks = (content: string) => {
 
 	//TODO: Test all of these regex patterns and document exactly what they match to.
 	//They can likely be minimized or combined in some way.
 	const linkFullMatches = content.match(linkFullRegex); //=> [Link Text](Link Directory + uuid/And Page Name + uuid)
+	console.log(linkFullMatches)
 	//? Because this is only a part of the above, it should probably be run in the iteration below so it doesn't have to check the whole page twice.
 	const linkTextMatches = content.match(linkTextRegex); //=> [Link Text](
 	const linkFloaterMatches = content.match(linkFloaterRegex);// => Text](Link Directory + uuid/And Page Name + uuid)
