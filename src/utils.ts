@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as npath from 'path';
 
 export const isImageFile = (file: string): boolean => {
-	return npath.extname(file) !== '.png';
+	return file.endsWith('.png') || file.endsWith('.jpeg') || file.endsWith('.jpg');
 }
 
 //Returns all of the directories and files for a path

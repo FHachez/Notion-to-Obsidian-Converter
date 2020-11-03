@@ -3,7 +3,7 @@
 // @TODO replace with proper csv parsing!
 //Goes through each link inside of CSVs and converts them
 
-import { convertRelativePath } from "./link";
+import { convertRelativePathToReference } from "./link";
 
 //* ../Relative%20Path/To/File%20Name.md => [[File Name]]
 export const convertCSVLinks = (content: string) => {
@@ -16,7 +16,7 @@ export const convertCSVLinks = (content: string) => {
 		for (let y = 0; y < cells.length; y++) {
 			let cell = cells[y];
 			if (cell.includes('.md')) {
-				cells[y] = convertRelativePath(cell);
+				cells[y] = convertRelativePathToReference(cell);
 				links++;
 			}
 		}

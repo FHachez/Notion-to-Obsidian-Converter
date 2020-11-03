@@ -1,7 +1,10 @@
 import { ObsidianIllegalNameRegex, URLRegex, linkFullRegex, linkTextRegex, linkFloaterRegex, linkNotionRegex } from './regex';
 import * as npath from 'path';
+import { isImageFile } from './utils';
 
-export const truncateFileName = (name: string) => {
+type ObsidianReference = string;
+
+export const truncateFileName = (name: string): string => {
 	// return fileName.substring(0, fileName.lastIndexOf(' ')) + fileName.substring(fileName.indexOf('.'));
 	let basename = npath.basename(name);
 	basename = basename.lastIndexOf(' ') > 0 ? basename.substring(0, basename.lastIndexOf(' ')) : basename;
@@ -13,8 +16,8 @@ export const truncateFileName = (name: string) => {
 	);
 };
 
-export const truncateDirName = (name: string) => {
-	// return directoryName.substring(0, directoryName.lastIndexOf(' '));
+export const truncateDirName = (name: string): string => {
+	//return name.substring(0, name.lastIndexOf(' '));
 	let basename = npath.basename(name);
 	basename = basename.lastIndexOf(' ') > 0 ? basename.substring(0, basename.lastIndexOf(' ')) : basename;
 	return npath.resolve(
@@ -47,8 +50,9 @@ export const convertMarkdownLinks = (content: string) => {
 				continue;
 			}
 			let linkText = linkTextMatches[i].substring(1, linkTextMatches[i].length - 2);
-			if (linkText.includes('.png') || linkText.includes('.jpg')) {
-				linkText = convertPNGPath(linkText);
+			// Before it was a simple include png, to see if still work
+			if (isImageFile(linkText)) {
+				linkText = convertImagePath(linkText);
 			} else {
 				linkText = linkText.replace(ObsidianIllegalNameRegex, ' ');
 			}
@@ -61,7 +65,7 @@ export const convertMarkdownLinks = (content: string) => {
 	if (linkFloaterMatches) {
 		totalLinks += linkFullMatches ? linkFloaterMatches.length - linkFullMatches.length : linkFloaterMatches.length;
 		//* This often won't run because the earlier linkFullMatches && linkTextMatches block will take care of most of the links
-		out = out.replace(linkFloaterRegex, convertRelativePath);
+		out = out.replace(linkFloaterRegex, convertRelativePathToReference);
 	}
 
 	//Convert random Notion.so links
@@ -77,20 +81,20 @@ export const convertMarkdownLinks = (content: string) => {
 };
 
 //* `![Page%20Title%20c5ae5f01ba5d4fb9a94d13d99397100c/Image%20Name.png](Page%20Title%20c5ae5f01ba5d4fb9a94d13d99397100c/Image%20Name.png)` => `![Page Title/Image Name.png]`
-export const convertPNGPath = (path: string) => {
+export const convertImagePath = (path: string): string => {
 	let imageTitle = path
 		.substring(path.lastIndexOf('/') + 1)
 		.split('%20')
 		.join(' ');
 
-	path = convertRelativePath(path.substring(0, path.lastIndexOf('/')));
+	path = convertRelativePathToReference(path.substring(0, path.lastIndexOf('/')));
 	path = path.substring(2, path.length - 2);
 
 	return `${path}/${imageTitle}`;
 };
 
 //* `https://www.notion.so/The-Page-Title-2d41ab7b61d14cec885357ab17d48536` => `[[The Page Title]]`
-export const convertNotionLink = (match: string) => {
+export const convertNotionLink = (match: string): ObsidianReference => {
 	return `[[${match
 		.substring(match.lastIndexOf('/') + 1)
 		.split('-')
@@ -100,13 +104,13 @@ export const convertNotionLink = (match: string) => {
 
 //Removes the leading directory and uuid at the end, leaving the page title
 //* `The%20Page%20Title%200637657f8a854e05a142871cce86ff701` => `[[Page Title]]
-export const convertRelativePath = (path: string) => {
+export const convertRelativePathToReference = (path: string): ObsidianReference => {
 	return `[[${(path.split('/').pop() || path).split('%20').slice(0, -1).join(' ')}]]`;
 };
 
-export const convertLinksIfMD = (link: string) => {
+export const convertLinksIfMD = (link: string): ObsidianReference => {
 	if (link.includes('.md')) {
-		return convertRelativePath(link);
+		return convertRelativePathToReference(link);
 	}
 	return link
 
