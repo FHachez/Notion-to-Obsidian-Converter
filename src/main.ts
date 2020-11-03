@@ -2,27 +2,31 @@ import * as fs from 'fs';
 import * as readline from 'readline';
 import * as npath from 'path';
 import { ObsidianIllegalNameRegex, URLRegex, linkFullRegex, linkTextRegex, linkFloaterRegex, linkNotionRegex } from './regex';
+import { getDirectoryContent } from './utils';
 
 const rl = readline.createInterface({
 	input: process.stdin,
 	output: process.stdout,
 });
-rl.question('Notion Export Path:\n', (path) => {
-	const start = Date.now();
-	const output = fixNotionExport(path.trim());
-	const elapsed = Date.now() - start;
 
-	console.log(
-		`Fixed in ${elapsed}ms
+function main() {
+	rl.question('Notion Export Path:\n', (path) => {
+		const start = Date.now();
+		const output = fixNotionExport(path.trim());
+		const elapsed = Date.now() - start;
+
+		console.log(
+			`Fixed in ${elapsed}ms
 ${'-'.repeat(8)}
 Directories: ${output.directories.length}
 Files: ${output.files.length}
 Markdown Links: ${output.markdownLinks}
 CSV Links: ${output.csvLinks}`
-	);
+		);
 
-	rl.close();
-});
+		rl.close();
+	});
+}
 
 const truncateFileName = (name: string) => {
 	// return fileName.substring(0, fileName.lastIndexOf(' ')) + fileName.substring(fileName.indexOf('.'));
@@ -54,7 +58,6 @@ export const convertMarkdownLinks = (content: string) => {
 	//TODO: Test all of these regex patterns and document exactly what they match to.
 	//They can likely be minimized or combined in some way.
 	const linkFullMatches = content.match(linkFullRegex); //=> [Link Text](Link Directory + uuid/And Page Name + uuid)
-	console.log(linkFullMatches)
 	//? Because this is only a part of the above, it should probably be run in the iteration below so it doesn't have to check the whole page twice.
 	const linkTextMatches = content.match(linkTextRegex); //=> [Link Text](
 	const linkFloaterMatches = content.match(linkFloaterRegex);// => Text](Link Directory + uuid/And Page Name + uuid)
@@ -70,7 +73,7 @@ export const convertMarkdownLinks = (content: string) => {
 				continue;
 			}
 			let linkText = linkTextMatches[i].substring(1, linkTextMatches[i].length - 2);
-			if (linkText.includes('.png')) {
+			if (linkText.includes('.png') || linkText.includes('.jpg')) {
 				linkText = convertPNGPath(linkText);
 			} else {
 				linkText = linkText.replace(ObsidianIllegalNameRegex, ' ');
@@ -127,6 +130,15 @@ const convertRelativePath = (path: string) => {
 	return `[[${(path.split('/').pop() || path).split('%20').slice(0, -1).join(' ')}]]`;
 };
 
+const convertLinksIfMD = (link: string) => {
+	if (link.includes('.md')) {
+		return convertRelativePath(link);
+	}
+	return link
+
+}
+
+// @TODO replace with proper csv parsing!
 //Goes through each link inside of CSVs and converts them
 //* ../Relative%20Path/To/File%20Name.md => [[File Name]]
 const convertCSVLinks = (content: string) => {
@@ -148,6 +160,7 @@ const convertCSVLinks = (content: string) => {
 	return { content: lines.join('\n'), links: links };
 };
 
+// Convert to proper csv parsing
 const convertCSVToMarkdown = (content: string) => {
 	//TODO clean up parameters
 	const csvCommaReplace = (match: string, p1: string, p2: string, p3: string, offset: string, string: string) => {
@@ -160,42 +173,40 @@ const convertCSVToMarkdown = (content: string) => {
 	return fix.join('\n');
 };
 
-//Returns all of the directories and files for a path
-const getDirectoryContent = (path: string) => {
-	const directories: string[] = [];
-	const files: string[] = [];
-	const currentDirectory = fs.readdirSync(path, { withFileTypes: true });
 
-	for (let i = 0; i < currentDirectory.length; i++) {
-		let currentPath = npath.format({
-			dir: path,
-			base: currentDirectory[i].name,
-		});
-		if (currentDirectory[i].isDirectory()) directories.push(currentPath);
-		if (currentDirectory[i].isFile()) files.push(currentPath);
+const isImageFile = (file: string): boolean => {
+	return npath.extname(file) !== '.png';
+}
+
+const renameNonImageFile = (file: string): string => {
+	//Rename file
+	if (isImageFile(file)) {
+		const truncatedFileName = truncateFileName(file);
+		if (fs.existsSync(truncatedFileName)) {
+			console.log(`Already moved a note called ${truncatedFileName}`);
+			return file
+		} else {
+			fs.renameSync(file, truncatedFileName);
+			truncatedFileName;
+			return truncatedFileName
+		}
 	}
-
-	return { directories: directories, files: files };
+	return file
 }
 
 const fixNotionExport = (path: string) => {
 	let markdownLinks = 0;
 	let csvLinks = 0;
 
-	const directoryContent = getDirectoryContent(path);
-	let directories: string[] = directoryContent.directories;
-	let files: string[] = directoryContent.files;
+	let { directories, files } = getDirectoryContent(path);
+	//let directories: string[] = directoryContent.directories;
+	//let files: string[] = directoryContent.files;
 
 	for (let i = 0; i < files.length; i++) {
 		let file = files[i];
 
-		//Rename file
-		if (npath.extname(file) !== '.png') {
-			const truncatedFileName = truncateFileName(file);
-			fs.renameSync(file, truncatedFileName);
-			file = truncatedFileName;
-			files[i] = truncatedFileName;
-		}
+		file = renameNonImageFile(file)
+		files[i] = file
 
 		//Convert Markdown Links
 		if (npath.extname(file) === '.md') {
@@ -225,11 +236,15 @@ const fixNotionExport = (path: string) => {
 	//Rename directories
 	for (let i = 0; i < directories.length; i++) {
 		let dir = directories[i];
-		fs.renameSync(dir, truncateDirName(dir));
-		directories[i] = truncateDirName(dir);
+		if (fs.existsSync(dir)) {
+			console.log(`Already moved a note with subnote called ${dir}`);
+		} else {
+			fs.renameSync(dir, truncateDirName(dir));
+			directories[i] = truncateDirName(dir);
+		}
 	}
 
-	//Convert chldren directories
+	//Convert children directories
 	directories.forEach((dir) => {
 		const reading = fixNotionExport(dir);
 		directories = directories.concat(reading.directories);
