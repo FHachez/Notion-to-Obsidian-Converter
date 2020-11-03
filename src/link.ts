@@ -28,7 +28,6 @@ export const truncateDirName = (name: string): string => {
 	);
 };
 
-
 //* [Link Text](Link Directory + uuid/And Page Name + uuid) => [[LinkText]]
 export const convertMarkdownLinks = (content: string) => {
 

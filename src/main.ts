@@ -36,7 +36,7 @@ CSV Links: ${output.csvLinks}`
 
 const renameNonImageFile = (file: string): string => {
 	//Rename file
-	if (isImageFile(file)) {
+	if (!isImageFile(file)) {
 		const truncatedFileName = truncateFileName(file);
 		if (fs.existsSync(truncatedFileName)) {
 			console.log(`Already moved a note called ${truncatedFileName}`);
@@ -50,6 +50,21 @@ const renameNonImageFile = (file: string): string => {
 	return file
 }
 
+const renameDirs = (directories: string[]): string[] => {
+	//Rename directories
+	return directories.map((dir) => {
+		const newDirName = truncateDirName(dir)
+		if (fs.existsSync(newDirName)) {
+			console.log(`Already moved a note with subnotes called ${dir}`);
+			return dir;
+		} else {
+			fs.renameSync(dir, newDirName);
+			return newDirName;
+		}
+	})
+}
+
+// Recursive function
 const fixNotionExport = (path: string) => {
 	let markdownLinks = 0;
 	let csvLinks = 0;
@@ -89,16 +104,7 @@ const fixNotionExport = (path: string) => {
 		}
 	}
 
-	//Rename directories
-	for (let i = 0; i < directories.length; i++) {
-		let dir = directories[i];
-		if (fs.existsSync(dir)) {
-			console.log(`Already moved a note with subnote called ${dir}`);
-		} else {
-			fs.renameSync(dir, truncateDirName(dir));
-			directories[i] = truncateDirName(dir);
-		}
-	}
+	directories = renameDirs(directories);
 
 	//Convert children directories
 	directories.forEach((dir) => {
