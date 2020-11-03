@@ -1,6 +1,7 @@
 import { ObsidianIllegalNameRegex, URLRegex, linkFullRegex, linkTextRegex, linkFloaterRegex, linkNotionRegex } from './regex';
 import * as npath from 'path';
-import { isImageFile } from './utils';
+import { isImageFile, isNotMDOrCSVFile } from './utils';
+import { link } from 'fs';
 
 type ObsidianReference = string;
 
@@ -50,7 +51,7 @@ export const convertMarkdownLinks = (content: string) => {
 			}
 			let linkText = linkTextMatches[i].substring(1, linkTextMatches[i].length - 2);
 			// Before it was a simple include png, to see if still work
-			if (isImageFile(linkText)) {
+			if (isNotMDOrCSVFile(linkFullMatches[i])) {
 				linkText = convertImagePath(linkText);
 			} else {
 				linkText = linkText.replace(ObsidianIllegalNameRegex, ' ');
@@ -94,11 +95,11 @@ export const convertImagePath = (path: string): string => {
 
 //* `https://www.notion.so/The-Page-Title-2d41ab7b61d14cec885357ab17d48536` => `[[The Page Title]]`
 export const convertNotionLink = (match: string): ObsidianReference => {
-	return `[[${match
+	return decodeURI(`[[${match
 		.substring(match.lastIndexOf('/') + 1)
 		.split('-')
 		.slice(0, -1)
-		.join(' ')}]]`;
+		.join(' ')}]]`);
 };
 
 //Removes the leading directory and uuid at the end, leaving the page title

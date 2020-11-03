@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as readline from 'readline';
 import * as npath from 'path';
-import { getDirectoryContent, isImageFile } from './utils';
+import { getDirectoryContent, isImageFile, isNotMDOrCSVFile } from './utils';
 import { convertMarkdownLinks, truncateDirName, truncateFileName } from './link';
 import { convertCSVLinks, convertCSVToMarkdown } from './notion_csv';
 
@@ -36,7 +36,7 @@ CSV Links: ${output.csvLinks}`
 
 const renameNonImageFile = (file: string): string => {
 	//Rename file
-	if (!isImageFile(file)) {
+	if (!isNotMDOrCSVFile(file)) {
 		const truncatedFileName = truncateFileName(file);
 		if (fs.existsSync(truncatedFileName)) {
 			console.log(`Already moved a note called ${truncatedFileName}`);
@@ -51,7 +51,6 @@ const renameNonImageFile = (file: string): string => {
 }
 
 const renameDirs = (directories: string[]): string[] => {
-	//Rename directories
 	return directories.map((dir) => {
 		const newDirName = truncateDirName(dir)
 		if (fs.existsSync(newDirName)) {
@@ -64,20 +63,18 @@ const renameDirs = (directories: string[]): string[] => {
 	})
 }
 
-// Recursive function
+// Recursively fix the export
 const fixNotionExport = (path: string) => {
 	let markdownLinks = 0;
 	let csvLinks = 0;
 
 	let { directories, files } = getDirectoryContent(path);
-	//let directories: string[] = directoryContent.directories;
-	//let files: string[] = directoryContent.files;
 
-	for (let i = 0; i < files.length; i++) {
-		let file = files[i];
+	const renamedFiles = [];
 
-		file = renameNonImageFile(file)
-		files[i] = file
+	for (let file of files) {
+		file = renameNonImageFile(file);
+		renamedFiles.push(file);
 
 		//Convert Markdown Links
 		if (npath.extname(file) === '.md') {

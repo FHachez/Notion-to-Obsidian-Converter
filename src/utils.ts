@@ -5,6 +5,10 @@ export const isImageFile = (file: string): boolean => {
 	return file.endsWith('.png') || file.endsWith('.jpeg') || file.endsWith('.jpg');
 }
 
+export const isNotMDOrCSVFile = (file: string): boolean => {
+	return !(file.includes('.md') || file.includes('.csv'));
+}
+
 //Returns all of the directories and files for a path
 export const getDirectoryContent = (path: string) => {
 	const directories: string[] = [];
