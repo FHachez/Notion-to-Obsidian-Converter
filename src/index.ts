@@ -1,1 +1,1 @@
-import * as m from './main';
+export * from './command';

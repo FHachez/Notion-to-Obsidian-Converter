@@ -4,29 +4,7 @@ import * as npath from 'path';
 import { getDirectoryContent, isImageFile, isNotMDOrCSVFile } from './utils';
 import { convertMarkdownLinks, truncateDirName, truncateFileName } from './link';
 import { convertCSVToMarkdown } from './notion_csv';
-
-const rl = readline.createInterface({
-	input: process.stdin,
-	output: process.stdout,
-});
-
-function processPath(path: string) {
-	const start = Date.now();
-	const output = fixNotionExport(path.trim());
-	const elapsed = Date.now() - start;
-
-	console.log(
-		`Fixed in ${elapsed}ms
-${'-'.repeat(8)}
-Directories: ${output.directories.length}
-Files: ${output.files.length}
-Markdown Links: ${output.markdownLinks}
-CSV Links: ${output.csvLinks}`
-	);
-
-	rl.close();
-
-}
+import { scheduled } from 'rxjs';
 
 const renameNonImageFile = (file: string): string => {
 	//Rename file
@@ -58,47 +36,52 @@ const renameDirs = (directories: string[]): string[] => {
 }
 
 // Recursively fix the export
-const fixNotionExport = (path: string) => {
+export const fixNotionExport = (path: string, shouldProcessCsv: boolean, shouldProcessMdFiles: boolean) => {
 	let markdownLinks = 0;
 	let csvLinks = 0;
 
 	let { directories, files } = getDirectoryContent(path);
 
-	const renamedFiles = [];
 
 	for (let file of files) {
-		file = renameNonImageFile(file);
-		renamedFiles.push(file);
+		if (shouldProcessMdFiles) {
+			file = renameNonImageFile(file);
 
-		//Convert Markdown Links
-		if (npath.extname(file) === '.md') {
-			const correctedFileContents = convertMarkdownLinks(fs.readFileSync(file, 'utf8'));
-			if (correctedFileContents.links) markdownLinks += correctedFileContents.links;
-			fs.writeFileSync(file, correctedFileContents.content, 'utf8');
+			//Convert Markdown Links
+			if (npath.extname(file) === '.md') {
+				const correctedFileContents = convertMarkdownLinks(fs.readFileSync(file, 'utf8'));
+				if (correctedFileContents.links) markdownLinks += correctedFileContents.links;
+				fs.writeFileSync(file, correctedFileContents.content, 'utf8');
+			}
 		}
-		//Convert CSV Links and create converted, extra CSV => Markdown file
-		else if (npath.extname(file) === '.csv') {
-			const csvContent = fs.readFileSync(file, 'utf8');
-			const csvContentAsMarkdown = convertCSVToMarkdown(csvContent);
-			csvLinks += csvContentAsMarkdown.links;
-			fs.writeFileSync(
-				npath.resolve(
-					npath.format({
-						dir: npath.dirname(file),
-						base: npath.basename(file, `.csv`) + '.md',
-					})
-				),
-				csvContentAsMarkdown.content,
-				'utf8'
-			);
+		if (shouldProcessCsv) {
+			//Convert CSV Links and create converted, extra CSV => Markdown file
+			if (npath.extname(file) === '.csv') {
+				const csvContent = fs.readFileSync(file, 'utf8');
+				const csvContentAsMarkdown = convertCSVToMarkdown(csvContent);
+				csvLinks += csvContentAsMarkdown.links;
+				fs.writeFileSync(
+					npath.resolve(
+						npath.format({
+							dir: npath.dirname(file),
+							base: npath.basename(file, `.csv`) + '.md',
+						})
+					),
+					csvContentAsMarkdown.content,
+					'utf8'
+				);
+
+			}
 		}
 	}
 
-	directories = renameDirs(directories);
+	if (shouldProcessMdFiles) {
+		directories = renameDirs(directories);
+	}
 
 	//Convert children directories
 	directories.forEach((dir) => {
-		const reading = fixNotionExport(dir);
+		const reading = fixNotionExport(dir, shouldProcessCsv, shouldProcessMdFiles);
 		directories = directories.concat(reading.directories);
 		files = files.concat(reading.files);
 		markdownLinks += reading.markdownLinks;
@@ -112,10 +95,3 @@ const fixNotionExport = (path: string) => {
 		csvLinks: csvLinks,
 	};
 };
-
-
-function main() {
-	rl.question('Notion Export Path:\n', processPath);
-}
-
-main();

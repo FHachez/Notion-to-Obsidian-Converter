@@ -9,6 +9,8 @@ This is a simple script to convert exported Notion notes to Obsidian (or maybe o
 3. Clone this repository
 4. Install packages: `npm i`
 5. Run `npm run start`
+    1. You have the choice to generate markdown tables for each Notion database/linked database (it's going to add a lot of links to your Obsidian Graph).
+    2. You have the choice of renaming all the files/folders without the uuid and updating the links to Obsidian references.
 6. Input the path where your Notion notes are
 7. Move notes folder into Obsidian directory
 
