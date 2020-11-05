@@ -40,3 +40,7 @@ Windows can't handle large paths. After unzipping the Notion data I wasn't able 
 ## Note
 
 This is not made to be robust. Don't run it twice on the same export or it's likely to fail and truncate paths unnecessarily.
+
+# Inspiration
+
+The original idea and basic implementation was inspired by Conner Tennery https://github.com/connertennery/Notion-to-Obsidian-Converter
