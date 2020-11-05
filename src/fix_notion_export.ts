@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as npath from 'path';
 import { getDirectoryContent } from './utils';
-import { convertMarkdownLinks, truncateDirName, truncateFileName } from './link';
+import { convertMarkdownLinks, truncateDirName, truncateFileName } from './fix_md';
 import { convertCSVToMarkdown } from './notion_csv';
 import { dir } from 'console';
 

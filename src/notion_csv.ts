@@ -2,7 +2,7 @@ import { parse } from 'papaparse';
 import markdownTable from 'markdown-table';
 import width from 'string-width'
 
-import { convertRelativePathToReference } from "./link";
+import { convertRelativePathToReference } from "./fix_md";
 import { Content } from './content';
 
 export const processCSVCell = (cell: string) => {

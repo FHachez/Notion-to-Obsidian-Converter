@@ -1,7 +1,10 @@
-import { ObsidianIllegalNameRegex, URLRegex, linkFullRegex, linkTextRegex, linkFloaterRegex, linkNotionRegex } from './regex';
+import {
+	ObsidianIllegalNameRegex, URLRegex, getLinkFloaterMatches,
+	getLinkTextWithSurroudingBracketMatches, getLinkTextWithPathMatches, getApproximateNotionMatches,
+	linkFloaterRegex, linkApproximateNotionRegex
+} from './regex';
 import * as npath from 'path';
-import { isImageFile, isNotMDOrCSVFile } from './utils';
-import { link } from 'fs';
+import { isNotMDOrCSVFile } from './utils';
 
 type ObsidianReference = string;
 
@@ -30,16 +33,16 @@ export const truncateDirName = (name: string): string => {
 	);
 };
 
+
 //* [Link Text](Link Directory + uuid/And Page Name + uuid) => [[LinkText]]
 export const convertMarkdownLinks = (content: string) => {
 
-	//TODO: Test all of these regex patterns and document exactly what they match to.
 	//They can likely be minimized or combined in some way.
-	const linkFullMatches = content.match(linkFullRegex); //=> [Link Text](Link Directory + uuid/And Page Name + uuid)
+	const linkFullMatches = getLinkTextWithPathMatches(content);
 	//? Because this is only a part of the above, it should probably be run in the iteration below so it doesn't have to check the whole page twice.
-	const linkTextMatches = content.match(linkTextRegex); //=> [Link Text](
-	const linkFloaterMatches = content.match(linkFloaterRegex);// => Text](Link Directory + uuid/And Page Name + uuid)
-	const linkNotionMatches = content.match(linkNotionRegex); // => `https://www.notion.so/The-Page-Title-2d41ab7b61d14cec885357ab17d48536`
+	const linkTextMatches = getLinkTextWithSurroudingBracketMatches(content);
+	const linkFloaterMatches = getLinkFloaterMatches(content);
+	const linkNotionMatches = getApproximateNotionMatches(content);
 	if (!linkFullMatches && !linkFloaterMatches && !linkNotionMatches) return { content: content, links: 0 };
 
 	let totalLinks = 0;
@@ -50,6 +53,7 @@ export const convertMarkdownLinks = (content: string) => {
 			if (URLRegex.test(linkFullMatches[i])) {
 				continue;
 			}
+			// Remove the end ]( of the text match
 			let linkText = linkTextMatches[i].substring(1, linkTextMatches[i].length - 2);
 			// Before it was a simple include png, to see if still work
 			if (isNotMDOrCSVFile(linkFullMatches[i])) {
@@ -71,7 +75,7 @@ export const convertMarkdownLinks = (content: string) => {
 
 	//Convert random Notion.so links
 	if (linkNotionMatches) {
-		out = out.replace(linkNotionRegex, convertNotionLink);
+		out = out.replace(linkApproximateNotionRegex, convertNotionLink);
 		totalLinks += linkNotionMatches.length;
 	}
 

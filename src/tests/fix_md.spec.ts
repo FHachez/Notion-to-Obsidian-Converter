@@ -1,6 +1,18 @@
-import { convertImagePath, convertMarkdownLinks, convertNotionLink, convertRelativePathToReference, truncateDirName, truncateFileName } from '../link';
+import fs from 'fs';
+import { convertImagePath, convertMarkdownLinks, convertNotionLink, convertRelativePathToReference, truncateDirName, truncateFileName } from '../fix_md';
 
 const currentDir = process.cwd()
+
+describe('Integration: ConvertMarkdowLinks', () => {
+	it('should correctly convert csv with multiline cells', () => {
+		const inputFile = __dirname + '/md/test_input.md';
+		const inputContent = fs.readFileSync(inputFile).toString()
+
+		const output = convertMarkdownLinks(inputContent)
+
+		expect(fs.readFileSync(__dirname + '/md/expected_output.md').toString()).toBe(output.content);
+	})
+});
 
 const inputLinkToExpectedValue = [
 	["[Mental Models I Find Repeatedly Useful - Gabriel Weinberg - Pocket](Mental%20Model%20(Master)%209046d23c4cd340f2854d889061e29548/Mental%20Models%20I%20Find%20Repeatedly%20Useful%20-%20Gabriel%20W%20460d555b62aa404eab75b7a3f188e96e.md)",
@@ -68,6 +80,8 @@ describe('convertNotionLink', () => {
 const inputImageLinkToExpectedValue = [
 	["Page%20Title%20c5ae5f01ba5d4fb9a94d13d99397100c/Image%20Name.png",
 		"Page Title/Image Name.png"],
+	[`![Page%20Title%20c5ae5f01ba5d4fb9a94d13d99397100c/Image%20Name.png](Page%20Title%20c5ae5f01ba5d4fb9a94d13d99397100c/Image%20Name.png)`,
+		`![Page Title/Image Name.png]`]
 ]
 
 describe('convertImagePath', () => {
