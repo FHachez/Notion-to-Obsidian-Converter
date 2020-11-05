@@ -2,8 +2,8 @@
   "name": "Notion-to-Obsidian-Converter",
   "version": "0.1.0",
   "description": "Converts Notion exports to Obsidian",
-  "main": "src/main.ts",
   "scripts": {
+    "start": "ts-node src/main.ts",
     "test": "jest"
   },
   "repository": "https://github.com/connertennery/Notion-to-Obsidian-Converter.git",

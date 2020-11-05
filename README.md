@@ -8,7 +8,7 @@ This is a simple script to convert exported Notion notes to Obsidian (or maybe o
 2. Unzip the data using 7-Zip (or something better than Window's default)
 3. Clone this repository
 4. Install packages: `npm i`
-5. Run `ts-node main`
+5. Run `npm run start`
 6. Input the path where your Notion notes are
 7. Move notes folder into Obsidian directory
 

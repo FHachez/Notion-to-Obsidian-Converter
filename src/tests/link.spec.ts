@@ -41,7 +41,6 @@ describe('truncateDirName', () => {
 	it.each(dirNameToTruncateWithExpectedValues)(
 		'It should truncate path %s into %s', (input, expected) => {
 			const output = truncateDirName(input)
-			console.log(output)
 
 			expect(output.toString()).toEqual(expected)
 
