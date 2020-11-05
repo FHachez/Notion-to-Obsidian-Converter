@@ -3,7 +3,7 @@ import * as readline from 'readline';
 import * as npath from 'path';
 import { getDirectoryContent, isImageFile, isNotMDOrCSVFile } from './utils';
 import { convertMarkdownLinks, truncateDirName, truncateFileName } from './link';
-import { convertCSVLinks, convertCSVToMarkdown } from './notion_csv';
+import { convertCSVToMarkdown } from './notion_csv';
 
 import { CONFIG } from './config';
 
@@ -80,10 +80,9 @@ const fixNotionExport = (path: string) => {
 		}
 		//Convert CSV Links and create converted, extra CSV => Markdown file
 		else if (npath.extname(file) === '.csv') {
-			const convertedCSVFile = convertCSVLinks(fs.readFileSync(file, 'utf8'));
-			const csvContentAsMarkdown = convertCSVToMarkdown(convertedCSVFile.content);
-			if (convertedCSVFile.links) csvLinks += convertedCSVFile.links;
-			fs.writeFileSync(file, convertedCSVFile.content, 'utf8');
+			const csvContent = fs.readFileSync(file, 'utf8');
+			const csvContentAsMarkdown = convertCSVToMarkdown(csvContent);
+			csvLinks += csvContentAsMarkdown.links;
 			fs.writeFileSync(
 				npath.resolve(
 					npath.format({
@@ -91,7 +90,7 @@ const fixNotionExport = (path: string) => {
 						base: npath.basename(file, `.csv`) + '.md',
 					})
 				),
-				csvContentAsMarkdown,
+				csvContentAsMarkdown.content,
 				'utf8'
 			);
 		}
