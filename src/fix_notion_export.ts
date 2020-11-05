@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as npath from 'path';
-import { getDirectoryContent, isNotMDOrCSVFile } from './utils';
+import { getDirectoryContent } from './utils';
 import { convertMarkdownLinks, truncateDirName, truncateFileName } from './link';
 import { convertCSVToMarkdown } from './notion_csv';
 import { dir } from 'console';
@@ -12,20 +12,18 @@ export interface FixNotionExportConfigI {
 }
 
 
-const renameNonImageFile = (file: string): string => {
-	//Rename file
-	if (!isNotMDOrCSVFile(file)) {
-		const truncatedFileName = truncateFileName(file);
-		if (fs.existsSync(truncatedFileName)) {
-			console.log(`Already moved a note called ${truncatedFileName}`);
-			return file
-		} else {
-			fs.renameSync(file, truncatedFileName);
-			truncatedFileName;
-			return truncatedFileName
-		}
+const renameNonCsvFile = (file: string): string => {
+	if (file.endsWith('.csv')) return file;
+
+	const truncatedFileName = truncateFileName(file);
+	if (fs.existsSync(truncatedFileName)) {
+		console.log(`Already moved a note called ${truncatedFileName}`);
+		return file
+	} else {
+		fs.renameSync(file, truncatedFileName);
+		truncatedFileName;
+		return truncatedFileName
 	}
-	return file
 }
 
 const processIfMarkdown = (file: string): number => {
@@ -44,12 +42,7 @@ const processIfCsv = (file: string): number => {
 		const csvContent = fs.readFileSync(file, 'utf8');
 		const csvContentAsMarkdown = convertCSVToMarkdown(csvContent);
 		fs.writeFileSync(
-			npath.resolve(
-				npath.format({
-					dir: npath.dirname(file),
-					base: npath.basename(file, `.csv`) + '.md',
-				})
-			),
+			truncateFileName(file.replace(/.csv$/, '.md')),
 			csvContentAsMarkdown.content,
 			'utf8'
 		);
@@ -72,14 +65,14 @@ const renameDirs = (directories: string[]): string[] => {
 	})
 }
 
-const isLinkedView = (file: string, directoriesNextToIt: string[]): boolean => {
+export const isLinkedView = (file: string, directoriesNextToIt: string[]): boolean => {
 	if (npath.extname(file) !== '.csv') {
 		return false
 	}
 	// A database is represented by a csv and a folder with one note for each row of the table
-	const csvFileWithoutExtension = file.replace(/.csv$/, '');
+	const expectedDir = npath.basename(file, `.csv`)
 	// A linked view doesn't have an adjacent folder with the same name
-	return !directoriesNextToIt.includes(csvFileWithoutExtension);
+	return !directoriesNextToIt.map(d => npath.basename(d)).includes(expectedDir);
 }
 
 const removeLinkedDb = (file: string) => {
@@ -112,14 +105,12 @@ export const fixNotionExport = (path: string, config: FixNotionExportConfigI) =>
 
 	let { directories, files } = getDirectoryContent(path);
 
-
 	for (let file of files) {
 		if (config.shouldProcessMdFiles) {
-			file = renameNonImageFile(file);
+			file = renameNonCsvFile(file);
 			markdownLinks += processIfMarkdown(file);
 		}
 		if (config.shouldProcessCsv) {
-
 			if (config.shouldRemoveLinkedDb) {
 				if (isLinkedView(file, directories)) {
 					removeLinkedDb(file);
@@ -138,18 +129,21 @@ export const fixNotionExport = (path: string, config: FixNotionExportConfigI) =>
 
 	removeDirIfEmpty(path);
 
+	let nFiles = 0;
+	let nDirectories = 0;
+
 	//Convert children directories
 	directories.forEach((dir) => {
 		const reading = fixNotionExport(dir, config);
-		directories = directories.concat(reading.directories);
-		files = files.concat(reading.files);
+		nDirectories += reading.nDirectories;
+		nFiles += reading.nFiles;
 		markdownLinks += reading.markdownLinks;
 		csvLinks += reading.csvLinks;
 	});
 
 	return {
-		directories: directories,
-		files: files,
+		nDirectories: nDirectories,
+		nFiles: nFiles,
 		markdownLinks: markdownLinks,
 		csvLinks: csvLinks,
 	};

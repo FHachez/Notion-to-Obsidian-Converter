@@ -9,8 +9,8 @@ function processPath({ inputFolder, shouldProcessCsv, shouldProcessMdFiles, shou
 	console.log(
 		`Fixed in ${elapsed}ms
 ${'-'.repeat(8)}
-Directories: ${output.directories.length}
-Files: ${output.files.length}
+Directories: ${output.nDirectories}
+Files: ${output.nFiles}
 Markdown Links: ${output.markdownLinks}
 CSV Links: ${output.csvLinks}`
 	);
