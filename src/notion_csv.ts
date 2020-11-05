@@ -7,7 +7,7 @@ import { Content } from './content';
 
 export const processCSVCell = (cell: string) => {
 	// Remove \n because markdown table doesn't support multiline cells
-	cell = cell.replace('\n', ' ').trim();
+	cell = cell.replace(/\n/gi, ' ').replace(/  +/gi, ' ').trim();
 	if (cell.includes('.md')) {
 		cell = convertRelativePathToReference(cell);
 	}
