@@ -5,8 +5,6 @@ import { getDirectoryContent, isImageFile, isNotMDOrCSVFile } from './utils';
 import { convertMarkdownLinks, truncateDirName, truncateFileName } from './link';
 import { convertCSVToMarkdown } from './notion_csv';
 
-import { CONFIG } from './config';
-
 const rl = readline.createInterface({
 	input: process.stdin,
 	output: process.stdout,
@@ -120,8 +118,4 @@ function main() {
 	rl.question('Notion Export Path:\n', processPath);
 }
 
-if (CONFIG) {
-	processPath(CONFIG.input_dir)
-} else {
-	main();
-}
+main();
