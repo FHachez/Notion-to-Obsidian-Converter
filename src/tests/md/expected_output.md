@@ -6,7 +6,7 @@ URL: https://mglerner.github.io/posts/histograms-and-kernel-density-estimation-k
 Updated: May 31, 2018 5:31 PM
 
 [Skip to main content](https://mglerner.github.io/posts/histograms-and-kernel-density-estimation-kde-2.html?p=28#content)
-[Histograms%20and%20kernel%20density%20estimation%20KDE/untitled](Histograms%20and%20kernel%20density%20estimation%20KDE%202/untitled)
+[[Histograms and kernel density estimation KDE 2/untitled]]
 
 -   [ ]
 
@@ -14,7 +14,7 @@ Updated: May 31, 2018 5:31 PM
 const test = "test"
 ```
 
-[[Action Items Database]]
+[[ Action Items Database]]
 🎞️ **Content Creation Dashboard** **(add your link, [[Content Machine Template]])**
 
 -   [[Vizualisation]]

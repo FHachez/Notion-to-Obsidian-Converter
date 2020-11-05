@@ -1,7 +1,7 @@
 import {
-	ObsidianIllegalNameRegex, URLRegex, getLinkFloaterMatches,
-	getLinkTextWithSurroudingBracketMatches, getLinkTextWithPathMatches, getApproximateNotionMatches,
-	linkFloaterRegex, linkApproximateNotionRegex
+	ObsidianIllegalNameRegex, URLRegex,
+	getLinkTextWithSurroudingBracketMatches, getLinkTextWithPathMatches,
+	linkNotionRegex
 } from './regex';
 import * as npath from 'path';
 import { isNotMDOrCSVFile } from './utils';
@@ -33,50 +33,43 @@ export const truncateDirName = (name: string): string => {
 	);
 };
 
-
 //* [Link Text](Link Directory + uuid/And Page Name + uuid) => [[LinkText]]
 export const convertMarkdownLinks = (content: string) => {
 
 	//They can likely be minimized or combined in some way.
 	const linkFullMatches = getLinkTextWithPathMatches(content);
-	//? Because this is only a part of the above, it should probably be run in the iteration below so it doesn't have to check the whole page twice.
-	const linkTextMatches = getLinkTextWithSurroudingBracketMatches(content);
-	const linkFloaterMatches = getLinkFloaterMatches(content);
-	const linkNotionMatches = getApproximateNotionMatches(content);
-	if (!linkFullMatches && !linkFloaterMatches && !linkNotionMatches) return { content: content, links: 0 };
 
 	let totalLinks = 0;
 	let out = content;
-	if (linkFullMatches && linkTextMatches) {
+	if (linkFullMatches) {
 		totalLinks += linkFullMatches.length;
-		for (let i = 0; i < linkFullMatches.length; i++) {
-			if (URLRegex.test(linkFullMatches[i])) {
-				continue;
-			}
-			// Remove the end ]( of the text match
-			let linkText = linkTextMatches[i].substring(1, linkTextMatches[i].length - 2);
-			// Before it was a simple include png, to see if still work
-			if (isNotMDOrCSVFile(linkFullMatches[i])) {
-				linkText = convertImagePath(linkText);
+
+		// TODO refactor for clarity
+		for (let match of linkFullMatches) {
+			let replacement = "";
+			if (URLRegex.test(match)) {
+				if (linkNotionRegex.test(match)) {
+					const url = match.match(linkNotionRegex);
+					if (!url) continue;
+					replacement = convertNotionLink(url[0]);
+					out = out.replace(match, replacement);
+				} else {
+					continue
+				}
 			} else {
-				linkText = linkText.replace(ObsidianIllegalNameRegex, ' ');
+				const linkTextWithBracket = getLinkTextWithSurroudingBracketMatches(match)
+				if (!linkTextWithBracket) continue;
+				// Remove the end ]( of the text match
+				let linkText = linkTextWithBracket[0].substring(1, linkTextWithBracket[0].length - 2);
+				// Before it was a simple include png, to see if still work
+				if (isNotMDOrCSVFile(match)) {
+					replacement = `[[${convertImagePath(linkText)}]]`;
+				} else {
+					replacement = `[[${linkText.replace(ObsidianIllegalNameRegex, ' ')}]]`;
+				}
+				out = out.replace(match, replacement);
 			}
-			out = out.replace(linkFullMatches[i], `[[${linkText}]]`);
 		}
-	}
-
-	//! Convert free-floating relativePaths
-	//TODO Document when and why this happens
-	if (linkFloaterMatches) {
-		totalLinks += linkFullMatches ? linkFloaterMatches.length - linkFullMatches.length : linkFloaterMatches.length;
-		//* This often won't run because the earlier linkFullMatches && linkTextMatches block will take care of most of the links
-		out = out.replace(linkFloaterRegex, convertRelativePathToReference);
-	}
-
-	//Convert random Notion.so links
-	if (linkNotionMatches) {
-		out = out.replace(linkApproximateNotionRegex, convertNotionLink);
-		totalLinks += linkNotionMatches.length;
 	}
 
 	return {
@@ -85,7 +78,8 @@ export const convertMarkdownLinks = (content: string) => {
 	};
 };
 
-//* `![Page%20Title%20c5ae5f01ba5d4fb9a94d13d99397100c/Image%20Name.png](Page%20Title%20c5ae5f01ba5d4fb9a94d13d99397100c/Image%20Name.png)` => `![Page Title/Image Name.png]`
+
+//* `bla](Page%20Title%20c5ae5f01ba5d4fb9a94d13d99397100c/Image%20Name.png)` => `![Page Title/Image Name.png]`
 export const convertImagePath = (path: string): string => {
 	let imageTitle = path
 		.substring(path.lastIndexOf('/') + 1)

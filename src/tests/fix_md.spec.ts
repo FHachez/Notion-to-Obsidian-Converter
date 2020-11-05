@@ -14,15 +14,15 @@ describe('Integration: ConvertMarkdowLinks', () => {
 	})
 });
 
-const inputLinkToExpectedValue = [
+const inputMarkdownLinkToExpectedValue = [
 	["[Mental Models I Find Repeatedly Useful - Gabriel Weinberg - Pocket](Mental%20Model%20(Master)%209046d23c4cd340f2854d889061e29548/Mental%20Models%20I%20Find%20Repeatedly%20Useful%20-%20Gabriel%20W%20460d555b62aa404eab75b7a3f188e96e.md)",
 		"[[Mental Models I Find Repeatedly Useful - Gabriel Weinberg - Pocket]]"],
-	["https://www.notion.so/The-Page-Title-(N)-2d41ab7b61d14cec885357ab17d48536",
+	["[ test](https://www.notion.so/The-Page-Title-(N)-2d41ab7b61d14cec885357ab17d48536)",
 		"[[The Page Title (N)]]"]
 ]
 
 describe('ConvertMarkdownLinks', () => {
-	it.each(inputLinkToExpectedValue)('should correctly parse "%s"', (input, expected) => {
+	it.each(inputMarkdownLinkToExpectedValue)('should correctly parse "%s"', (input, expected) => {
 
 		const output = convertMarkdownLinks(input)
 
@@ -80,8 +80,6 @@ describe('convertNotionLink', () => {
 const inputImageLinkToExpectedValue = [
 	["Page%20Title%20c5ae5f01ba5d4fb9a94d13d99397100c/Image%20Name.png",
 		"Page Title/Image Name.png"],
-	[`![Page%20Title%20c5ae5f01ba5d4fb9a94d13d99397100c/Image%20Name.png](Page%20Title%20c5ae5f01ba5d4fb9a94d13d99397100c/Image%20Name.png)`,
-		`![Page Title/Image Name.png]`]
 ]
 
 describe('convertImagePath', () => {
