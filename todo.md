@@ -1,7 +1,1 @@
--   [ ]Fix issue with linked db that are repeated... I've got the concept db and reading list db repeated a lot, a lot! In total I got 222 683 links... in the csv...
-    -   I don't need these csv files!
-    -   Let's export them correctly and create a script to remove the duplicates! (Aka the references!)
--   [x] Proper handling of the csv and multiline cells.
--   [x] Let's rename folders and remove the numbers from the file name ?
-    -   How do we manage conflicts? Add a number? What about the references?
 -   Let's build an index of the sub-notes (for example for the concept db). Either we list it ourselve or we use the csv and format the name...

@@ -1,15 +1,9 @@
 import inquirer from 'inquirer';
-import { fixNotionExport } from './fix_notion_export';
+import { fixNotionExport, FixNotionExportConfigI } from './fix_notion_export';
 
-export interface ConfigI {
-	inputFolder: string
-	shouldProcessCsv: boolean
-	shouldProcessMdFiles: boolean
-}
-
-function processPath({ inputFolder, shouldProcessCsv, shouldProcessMdFiles }: ConfigI) {
+function processPath({ inputFolder, shouldProcessCsv, shouldProcessMdFiles, shouldRemoveLinkedDb = false }: FixNotionExportConfigI & { inputFolder: string }) {
 	const start = Date.now();
-	const output = fixNotionExport(inputFolder.trim(), shouldProcessCsv, shouldProcessMdFiles);
+	const output = fixNotionExport(inputFolder.trim(), { shouldProcessCsv, shouldProcessMdFiles, shouldRemoveLinkedDb });
 	const elapsed = Date.now() - start;
 
 	console.log(
@@ -28,9 +22,21 @@ const questions = [
 	{ type: 'confirm', name: 'shouldProcessMdFiles', message: 'Do you want to remove the uuid and create obsidian links?', default: true },
 ]
 
+const questionIfProcessMdFiles = [
+	{ type: 'confirm', name: 'shouldRemoveLinkedDb', message: 'Do you want to remove linked DB (the exported linked db are not filtered)?', default: true },
+]
+
 async function main() {
 	const config = await inquirer.prompt(questions)
-	processPath(config)
+
+	if (config.shouldProcessCsv) {
+		const linkedDbConfig = await inquirer.prompt(questionIfProcessMdFiles)
+		processPath({ ...config, ...linkedDbConfig })
+
+	} else {
+		processPath(config)
+	}
+
 }
 
 main();

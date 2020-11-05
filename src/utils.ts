@@ -9,8 +9,13 @@ export const isNotMDOrCSVFile = (file: string): boolean => {
 	return !(file.includes('.md') || file.includes('.csv'));
 }
 
+export interface DirectoryContentI {
+	files: string[]
+	directories: string[]
+}
+
 //Returns all of the directories and files for a path
-export const getDirectoryContent = (path: string) => {
+export const getDirectoryContent = (path: string): DirectoryContentI => {
 	const directories: string[] = [];
 	const files: string[] = [];
 	const currentDirectory = fs.readdirSync(path, { withFileTypes: true });
