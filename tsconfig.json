@@ -2,6 +2,8 @@
 	"compilerOptions": {
 		"target": "es5",
 		"module": "commonjs",
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
 		"outDir": "out",
 		"sourceMap": true,
 		"strict": true,
