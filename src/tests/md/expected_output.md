@@ -5,7 +5,7 @@ Tags: Archive, ML, data science, histogram, kernel, ria
 URL: https://mglerner.github.io/posts/histograms-and-kernel-density-estimation-kde-2.html?p=28
 Updated: May 31, 2018 5:31 PM
 
-[Skip to main content](https://mglerner.github.io/posts/histograms-and-kernel-density-estimation-kde-2.html?p=28#content)
+[Skip to "main" content](https://mglerner.github.io/posts/histograms-and-kernel-density-estimation-kde-2.html?p=28#content)
 Let's keep the file that are not recognize by obsidian (no extension)
 ![Histograms and kernel density estimation KDE 2/untitled](Histograms and kernel density estimation KDE 2/untitled)
 
@@ -23,7 +23,7 @@ These won't be formated because it's not a markdown link:
 [[ Action Items Database]]
 🎞️ **Content Creation Dashboard** **(add your link, [[Content Machine Template]])**
 
--   [[Vizualisation]]
+-   [[ Vizualisation ]]
 
 ### Hello
 

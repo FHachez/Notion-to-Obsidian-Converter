@@ -3,7 +3,8 @@ import {
 	getLinkTextWithSurroudingBracketMatches, getLinkTextWithPathMatches,
 	linkNotionRegex,
 	removeUUIDs,
-	replaceEncodedSpaceWithSpace
+	replaceEncodedSpaceWithSpace,
+	cleanUUIdsAndIllegalChar
 } from './regex';
 import * as npath from 'path';
 import { hasAFileExtension, isNotMDOrCSVFile } from './utils';
@@ -45,7 +46,7 @@ export const convertMarkdownLinks = (content: string) => {
 				} else if (isNotMDOrCSVFile(match)) {
 					replacement = `[[${convertImagePath(linkText)}]]`;
 				} else {
-					replacement = `[[${linkText.replace(ObsidianIllegalNameRegex, ' ')}]]`;
+					replacement = `[[${cleanUUIdsAndIllegalChar(linkText)}]]`;
 				}
 				out = out.replace(match, replacement);
 			}
@@ -66,8 +67,8 @@ export const convertMarkdownLinks = (content: string) => {
 export const convertImagePath = (path: string): string => {
 	const decodedPathWithoutUUID = removeUUIDs(replaceEncodedSpaceWithSpace(path));
 
-	let imageTitle = npath.basename(decodedPathWithoutUUID);
-	let folder = npath.dirname(decodedPathWithoutUUID);
+	let imageTitle = cleanUUIdsAndIllegalChar(npath.basename(decodedPathWithoutUUID));
+	let folder = cleanUUIdsAndIllegalChar(npath.dirname(decodedPathWithoutUUID));
 
 	return `${folder}/${imageTitle}`;
 };

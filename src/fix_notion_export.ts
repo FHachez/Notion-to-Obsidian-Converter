@@ -4,7 +4,7 @@ import { getDirectoryContent } from './utils';
 import { convertMarkdownLinks } from './fix_md';
 import { convertCSVToMarkdown } from './notion_csv';
 import { dir } from 'console';
-import { removeUUIDs } from './regex';
+import { cleanUUIdsAndIllegalChar, removeUUIDs } from './regex';
 
 export interface FixNotionExportConfigI {
 	shouldProcessCsv: boolean
@@ -15,8 +15,9 @@ export interface FixNotionExportConfigI {
 /**
  * Removes the UUID of the path and resolve it to an absolute path
  */
-export const removeUUIDAndResolvePath = (name: string): string => {
-	return npath.resolve(removeUUIDs(name));
+export const cleanFileNameForReferenceAndResolvePath = (name: string): string => {
+	const fileName = cleanUUIdsAndIllegalChar(npath.basename(name))
+	return npath.resolve(`${npath.dirname(name)}/${fileName}`);
 };
 
 const renameNonCsvFile = (file: string): string => {

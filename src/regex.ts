@@ -1,4 +1,4 @@
-export const ObsidianIllegalNameRegex = /[\*\"\/\\\<\>\:\|\?]/g;
+export const ObsidianIllegalNameRegex = /[\*\"\/\<\>\:\|\?]/g;
 export const URLRegex = /(:\/\/)|(w{3})|(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/;
 
 // Match paired paranteses: https://stackoverflow.com/questions/9580319/regular-expression-for-paired-brackets
@@ -32,3 +32,13 @@ export const optionalSpaceOrDashThenUUIDRegex = /[ \-]?[0-9a-f]{8}[0-9a-f]{4}[0-
 export const removeUUIDs = (content: string) => content.replace(optionalSpaceOrDashThenUUIDRegex, "");
 
 export const replaceEncodedSpaceWithSpace = (content: string) => content.replace(/\%20/g, ' ')
+
+/**
+ * Replace Illegal Obsidian Char with space
+ */
+export const replaceIllegalObsidianCharWithSpace = (content: string) => content.replace(ObsidianIllegalNameRegex, ' ');
+
+/**
+ * Remove UUIDs and all the illegal char for the references. (Do not use on links or on paths)!!)
+ */
+export const cleanUUIdsAndIllegalChar = (content: string) => replaceIllegalObsidianCharWithSpace(removeUUIDs(content))

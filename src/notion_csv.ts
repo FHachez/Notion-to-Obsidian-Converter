@@ -4,7 +4,7 @@ import width from 'string-width'
 
 import { convertRelativePathToObsidianReference } from "./fix_md";
 import { Content } from './content';
-import { removeUUIDs } from './regex';
+import { cleanUUIdsAndIllegalChar } from './regex';
 
 export const processCSVCell = (cell: string) => {
 	// Remove \n because markdown table doesn't support multiline cells
@@ -23,7 +23,8 @@ export const transformCellToLink = (cell: string) => {
 		return cell;
 	}
 	// Remove \n because markdown table doesn't support multiline cells
-	cell = removeUUIDs(cell).replace(/\n/gi, ' ').replace(/  +/gi, ' ').trim();
+	cell = cell.replace(/\n/gi, ' ').replace(/  +/gi, ' ').trim();
+	cell = cleanUUIdsAndIllegalChar(cell)
 	return `[[${cell}]]`;
 }
 
@@ -36,13 +37,13 @@ export const convertCSVToMarkdown = (content: string): Content => {
 	}
 	const header = parsedContent.data[0]
 
-	const dataWithoutColumns = parsedContent.data.slice(1).map((r) => {
+	const data = parsedContent.data.slice(1).map((r) => {
 		const firstCell = transformCellToLink(r[0]);
 		return [firstCell].concat(r.slice(1).map(processCSVCell));
 	})
 
 	return {
-		content: markdownTable([header, ...dataWithoutColumns], { stringLength: width }),
+		content: markdownTable([header, ...data], { stringLength: width }),
 		links: 0,
 	}
 };

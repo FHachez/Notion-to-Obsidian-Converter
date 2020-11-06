@@ -1,4 +1,4 @@
-import { isLinkedView, removeUUIDAndResolvePath } from "../fix_notion_export";
+import { cleanFileNameForReferenceAndResolvePath, isLinkedView, removeUUIDAndResolvePath } from "../fix_notion_export";
 
 const currentDir = process.cwd()
 
@@ -31,12 +31,13 @@ const fileNameToTruncateWithExpectedValues = [
 	["test/Concepts Facts DB 509873978c5c4d1ab3002ee934ad4686.md", currentDir + "/test/Concepts Facts DB.md"],
 	["/full/feedback (N) b0ab9f2e031f4fe79f6214cd876dbdf5.md", "/full/feedback (N).md"],
 	["test/Concepts Facts DB 509873978c5c4d1ab3002ee934ad4686", currentDir + "/test/Concepts Facts DB"],
-	["/full/feedback (N) b0ab9f2e031f4fe79f6214cd876dbdf5", "/full/feedback (N)"]
+	["/full/feedback (N) b0ab9f2e031f4fe79f6214cd876dbdf5", "/full/feedback (N)"],
+	["Test: c29d85477c77427f88ece7143e480e1f.md", currentDir + "/Test .md"]
 ]
 describe('removeUUIDAndResolvePath', () => {
 	it.each(fileNameToTruncateWithExpectedValues)(
 		'It should truncate path %s into %s', (input, expected) => {
-			const output = removeUUIDAndResolvePath(input)
+			const output = cleanFileNameForReferenceAndResolvePath(input)
 
 			expect(output).toBe(expected)
 
