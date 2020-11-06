@@ -6,6 +6,8 @@ import { convertCSVToMarkdown } from './notion_csv';
 import { capReferenceLength, cleanUUIdsAndIllegalChar, fileExtensionRegex, sanatizeObsidianRefLink } from './regex';
 
 export interface FixNotionExportConfigI {
+	input_dir: string
+	duplicates_dir: string
 	shouldProcessCsv: boolean
 	shouldProcessMdFiles: boolean
 	shouldRemoveLinkedDb: boolean
@@ -29,9 +31,7 @@ const renameNonCsvFile = (file: string): string | null => {
 
 	const truncatedFileName = cleanFileNameForReferenceAndResolvePath(file);
 	if (fs.existsSync(truncatedFileName)) {
-		console.log(`Already moved a note called ${truncatedFileName}`);
-		fs.unlinkSync(file);
-		return null;
+		return file;
 	} else {
 		fs.renameSync(file, truncatedFileName);
 		truncatedFileName;
@@ -122,6 +122,7 @@ export const fixNotionExport = (path: string, config: FixNotionExportConfigI) =>
 		if (config.shouldProcessMdFiles) {
 			const newName = renameNonCsvFile(file);
 			if (!newName) {
+				console.log(`${newName} is a duplicated csv`)
 				continue
 			} else {
 				file = newName
@@ -147,8 +148,8 @@ export const fixNotionExport = (path: string, config: FixNotionExportConfigI) =>
 
 	removeDirIfEmpty(path);
 
-	let nFiles = 0;
-	let nDirectories = 0;
+	let nFiles = files.length;
+	let nDirectories = directories.length;
 
 	//Convert children directories
 	directories.forEach((dir) => {

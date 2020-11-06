@@ -3,7 +3,10 @@ import { fixNotionExport, FixNotionExportConfigI } from './fix_notion_export';
 
 function processPath({ inputFolder, shouldProcessCsv, shouldProcessMdFiles, shouldRemoveLinkedDb = false }: FixNotionExportConfigI & { inputFolder: string }) {
 	const start = Date.now();
-	const output = fixNotionExport(inputFolder.trim(), { shouldProcessCsv, shouldProcessMdFiles, shouldRemoveLinkedDb });
+	const output = fixNotionExport(inputFolder.trim(), {
+		shouldProcessCsv, shouldProcessMdFiles, shouldRemoveLinkedDb,
+		input_dir: inputFolder, duplicates_dir: inputFolder + "/__duplicates__"
+	});
 	const elapsed = Date.now() - start;
 
 	console.log(
