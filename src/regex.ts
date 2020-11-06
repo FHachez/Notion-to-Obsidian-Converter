@@ -38,7 +38,7 @@ export const replaceEncodedSpaceWithSpace = (content: string) => content.replace
 /**
  * Replace Illegal Obsidian Char with space
  */
-export const removeIllegalObsidianChar = (content: string) => content.replace(ObsidianIllegalNameRegex, '');
+export const replaceIllegalObsidianCharWithSpace = (content: string) => content.replace(ObsidianIllegalNameRegex, '');
 
 /**
  * Notion Cut at around 50 char + UUID the length of the file name
@@ -57,7 +57,7 @@ export const capReferenceLength = (content: string) => {
 /**
  * Remove UUIDs and all the illegal char for the references. (Do not use on links or on paths)!!)
  */
-export const cleanUUIdsAndIllegalChar = (content: string) => removeIllegalObsidianChar(removeUUIDs(content))
+export const cleanUUIdsAndIllegalChar = (content: string) => replaceIllegalObsidianCharWithSpace(removeUUIDs(content))
 
 /**
  * Sanatize an Obsidian Ref Link
