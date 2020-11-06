@@ -37,6 +37,8 @@ const fileNameToTruncateWithExpectedValues = [
 		currentDir + "/test/Lorem Ipsum is simply dummy text of the print.md"],
 	["test/A 5-step process for nearly anything 1) Explore wi d3ff636268ce4eceaccab28c7408dcb4.md",
 		currentDir + "/test/A 5-step process for nearly anything 1) Explo.md"],
+	["/Creamy Mac and Cheese - Million Dollar Vegan a2be8eb3f3b9472a908caf6dae487160.md",
+		"/Creamy Mac and Cheese - Million Dollar Vegan.md"],
 
 ]
 describe('removeUUIDAndResolvePath', () => {

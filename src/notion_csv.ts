@@ -26,7 +26,7 @@ export const transformCellToLink = (cell: string) => {
 	// Notion doesn't count the new line as a space for the file name.
 	// Notion also remove the "." from the references
 	cell = cleanUUIdsAndIllegalChar(cell);
-	cell = cell.replace(/\n|\./gi, '').replace(/  +/gi, ' ').trim();
+	cell = cell.replace(/\n|\.|,/gi, '').replace(/  +/gi, ' ').trim();
 
 	cell = capReferenceLength(cell)
 
@@ -34,6 +34,7 @@ export const transformCellToLink = (cell: string) => {
 }
 
 //Goes through each link inside of CSVs and converts them
+// This is note a pure link but the title of the note!
 export const convertCSVToMarkdown = (content: string): Content => {
 	const parsedContent = parse<string[]>(content);
 	if (!parsedContent.data.length) {
