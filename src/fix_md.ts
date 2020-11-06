@@ -83,28 +83,34 @@ export const convertMarkdownLinks = (content: string) => {
 };
 
 
-//* `bla](Page%20Title%20c5ae5f01ba5d4fb9a94d13d99397100c/Image%20Name.png)` => `![Page Title/Image Name.png]`
+/**
+ * Transforms `bla](Page%20Title%20c5ae5f01ba5d4fb9a94d13d99397100c/Image%20Name.png)`
+ * Into `![Page Title/Image Name.png]`
+ */
 export const convertImagePath = (path: string): string => {
-	let imageTitle = path
-		.substring(path.lastIndexOf('/') + 1)
-		.split('%20')
-		.join(' ');
+	const decodedPathWithoutUUID = removeUUIDs(decodeURI(path));
 
-	path = convertRelativePathToObsidianReference(path.substring(0, path.lastIndexOf('/')));
-	path = path.substring(2, path.length - 2);
+	let imageTitle = npath.basename(decodedPathWithoutUUID);
+	let folder = npath.dirname(decodedPathWithoutUUID);
 
-	return `${path}/${imageTitle}`;
+	return `${folder}/${imageTitle}`;
 };
 
-//* `https://www.notion.so/The-Page-Title-2d41ab7b61d14cec885357ab17d48536` => `[[The Page Title]]`
+/**
+ * Transforms `https://www.notion.so/The-Page-Title-2d41ab7b61d14cec885357ab17d48536`
+ * Into `[[The Page Title]]`
+ */
 export const convertNotionLink = (match: string): ObsidianReference => {
 	const urlWithoutUUID = removeUUIDs(match)
 	return decodeURI(`[[${urlWithoutUUID
 		.substring(match.lastIndexOf('/') + 1).replace(/-/g, ' ')}]]`);
 };
 
-//Removes the leading directory and uuid at the end, leaving the page title
-//* `The%20Page%20Title%200637657f8a854e05a142871cce86ff701` => `[[Page Title]]
+/**
+ * Removes the leading directory and uuid at the end, leaving the page title
+ * Transforms `The%20Page%20Title%200637657f8a854e05a142871cce86ff701`
+ * Into `[[Page Title]]
+ */
 export const convertRelativePathToObsidianReference = (path: string): ObsidianReference => {
 	const fileName = npath.basename(path)
 	const fileNameWithoutUUID = removeUUIDs(decodeURI(fileName));
