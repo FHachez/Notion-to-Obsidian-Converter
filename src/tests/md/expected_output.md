@@ -20,7 +20,7 @@ These won't be formated because it's not a markdown link:
 -   https://www.notion.so/0b30ec3dd5d749c1af516cebfabb9eb4
 -   https://google.com
 
-[[ActionItemsDatabase]]
+[[Action Items Database]]
 🎞️ **Content Creation Dashboard** **(add your link, [[Content Machine Template]])**
 
 -   [[Vizualisation]]

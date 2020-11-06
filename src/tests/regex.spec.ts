@@ -151,24 +151,24 @@ describe('cleanUUIdsAndIllegalChar', () => {
 	const inputTextWithUUIDToExpectedText: [string, string][] = [
 		// Normal link to other note
 		["let's :get a full match [Mental - Pocket (N)](Mental%20Model%20(Master)%209046d23c4cd340f2854d889061e29548/Mental%20Models%20I%20Find%20Repeatedly%20Useful%20-%20Gabriel%20W%20460d555b62aa404eab75b7a3f188e96e.md) follow up",
-			"let's get a full match [Mental - Pocket (N)](Mental%20Model%20(Master)%20Mental%20Models%20I%20Find%20Repeatedly%20Useful%20-%20Gabriel%20W%20.md) follow up"],
+			"let's  get a full match [Mental - Pocket (N)](Mental%20Model%20(Master)%20 Mental%20Models%20I%20Find%20Repeatedly%20Useful%20-%20Gabriel%20W%20.md) follow up"],
 		// Url link
 		["🎞️**Content Creation Dashboard**",
-			"🎞️Content Creation Dashboard"],
+			"🎞️  Content Creation Dashboard  "],
 		// Image
 		["ahaha;test:ahah/b",
-			"ahaha;testahahb"],
+			"ahaha;test ahah b"],
 		// Image without file type
 		["- [] [Histograms%20and%20kernel%202%20c15c33d1f1aa4c88bfd9ba2ac1da4b4a/untitled",
-			"- [] [Histograms%20and%20kernel%202%20untitled"],
-		["Ref:1", "Ref1"],
+			"- [] [Histograms%20and%20kernel%202%20 untitled"],
+		["Ref:1", "Ref 1"],
 	]
 
 	it.each(inputTextWithUUIDToExpectedText)('should correctly parse "%s"', (input, expectedFullMatch) => {
 
 		const output = cleanUUIdsAndIllegalChar(input)
 
-		expect(output).toBe(expectedFullMatch)
+		expect(output).toBe(expectedFullMatch.normalize("NFD"))
 	})
 });
 

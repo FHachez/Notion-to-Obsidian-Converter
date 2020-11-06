@@ -1,3 +1,5 @@
+import { } from 'string-width';
+
 export const ObsidianIllegalNameRegex = /[\*\"\/\<\>\:\|\?]/g;
 export const URLRegex = /(:\/\/)|(w{3})|(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/;
 
@@ -38,7 +40,7 @@ export const replaceEncodedSpaceWithSpace = (content: string) => content.replace
 /**
  * Replace Illegal Obsidian Char with space
  */
-export const replaceIllegalObsidianCharWithSpace = (content: string) => content.replace(ObsidianIllegalNameRegex, '');
+export const replaceIllegalObsidianCharWithSpace = (content: string) => content.replace(ObsidianIllegalNameRegex, ' ');
 
 /**
  * Notion Cut at around 50 char + UUID the length of the file name
@@ -47,9 +49,14 @@ export const replaceIllegalObsidianCharWithSpace = (content: string) => content.
 export const maxReferenceLength = 45
 export const capReferenceLength = (content: string) => {
 	// If there is a leading space we don't want to take it into account in the cut!
+	content = content.normalize("NFD")
+	console.log(content)
 	content = content.trim();
 	if (content.length > maxReferenceLength) {
-		return content.slice(0, maxReferenceLength).trim();
+		content = content.slice(0, maxReferenceLength)
+		console.log(content)
+		content = content.replace(/^ +| +$/, '');
+		console.log(content)
 	}
 	return content;
 }

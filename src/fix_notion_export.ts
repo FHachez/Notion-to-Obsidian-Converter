@@ -16,21 +16,24 @@ export interface FixNotionExportConfigI {
  */
 export const cleanFileNameForReferenceAndResolvePath = (name: string): string => {
 	const extension = name.match(fileExtensionRegex);
+	console.log(extension)
 	const fileName = cleanUUIdsAndIllegalChar(npath.basename(name))
 	let sanatizedFileName = capReferenceLength(fileName.replace(fileExtensionRegex, ''))
 	if (extension && fileName !== sanatizedFileName) {
+		console.log(extension)
 		sanatizedFileName += extension[0]
 	}
 	return npath.resolve(`${npath.dirname(name)}/${sanatizedFileName}`);
 };
 
-const renameNonCsvFile = (file: string): string => {
+const renameNonCsvFile = (file: string): string | null => {
 	if (file.endsWith('.csv')) return file;
 
 	const truncatedFileName = cleanFileNameForReferenceAndResolvePath(file);
 	if (fs.existsSync(truncatedFileName)) {
 		console.log(`Already moved a note called ${truncatedFileName}`);
-		return file
+		fs.unlinkSync(file);
+		return null;
 	} else {
 		fs.renameSync(file, truncatedFileName);
 		truncatedFileName;
@@ -119,7 +122,12 @@ export const fixNotionExport = (path: string, config: FixNotionExportConfigI) =>
 
 	for (let file of files) {
 		if (config.shouldProcessMdFiles) {
-			file = renameNonCsvFile(file);
+			const newName = renameNonCsvFile(file);
+			if (!newName) {
+				continue
+			} else {
+				file = newName
+			}
 			markdownLinks += processIfMarkdown(file);
 		}
 		if (config.shouldProcessCsv) {

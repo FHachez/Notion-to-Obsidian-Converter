@@ -93,14 +93,5 @@ export const convertNotionLink = (match: string): ObsidianReference => {
 export const convertRelativePathToObsidianReference = (path: string): ObsidianReference => {
 	const fileName = npath.basename(path)
 	const fileNameWithoutUUID = sanatizeObsidianRefLink(replaceEncodedSpaceWithSpace(fileName));
-	return `[[${fileNameWithoutUUID.replace(/\..+$/, '')}]]`;
 	return `[[${fileNameWithoutUUID.replace(fileExtensionRegex, '')}]]`;
 };
-
-export const convertLinksIfMD = (link: string): ObsidianReference => {
-	if (link.includes('.md')) {
-		return convertRelativePathToObsidianReference(link);
-	}
-	return link
-
-}

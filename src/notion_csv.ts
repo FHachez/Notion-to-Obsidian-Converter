@@ -26,7 +26,7 @@ export const transformCellToLink = (cell: string) => {
 	// Notion doesn't count the new line as a space for the file name.
 	// Notion also remove the "." from the references
 	cell = cleanUUIdsAndIllegalChar(cell);
-	cell = cell.replace(/\n|\.|,/gi, '').replace(/  +/gi, ' ').trim();
+	cell = cell.replace(/\n/g, ' ').replace(/\./gi, ' ').replace(/  +/gi, ' ').trim();
 
 	cell = capReferenceLength(cell)
 
