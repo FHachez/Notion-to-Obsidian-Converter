@@ -151,17 +151,17 @@ describe('cleanUUIdsAndIllegalChar', () => {
 	const inputTextWithUUIDToExpectedText: [string, string][] = [
 		// Normal link to other note
 		["let's :get a full match [Mental - Pocket (N)](Mental%20Model%20(Master)%209046d23c4cd340f2854d889061e29548/Mental%20Models%20I%20Find%20Repeatedly%20Useful%20-%20Gabriel%20W%20460d555b62aa404eab75b7a3f188e96e.md) follow up",
-			"let's  get a full match [Mental - Pocket (N)](Mental%20Model%20(Master)%20 Mental%20Models%20I%20Find%20Repeatedly%20Useful%20-%20Gabriel%20W%20.md) follow up"],
+			"let's get a full match [Mental - Pocket (N)](Mental%20Model%20(Master)%20Mental%20Models%20I%20Find%20Repeatedly%20Useful%20-%20Gabriel%20W%20.md) follow up"],
 		// Url link
 		["🎞️**Content Creation Dashboard**",
-			"🎞️  Content Creation Dashboard  "],
+			"🎞️Content Creation Dashboard"],
 		// Image
 		["ahaha;test:ahah/b",
-			"ahaha;test ahah b"],
+			"ahaha;testahahb"],
 		// Image without file type
 		["- [] [Histograms%20and%20kernel%202%20c15c33d1f1aa4c88bfd9ba2ac1da4b4a/untitled",
-			"- [] [Histograms%20and%20kernel%202%20 untitled"],
-		["Ref:1", "Ref 1"],
+			"- [] [Histograms%20and%20kernel%202%20untitled"],
+		["Ref:1", "Ref1"],
 	]
 
 	it.each(inputTextWithUUIDToExpectedText)('should correctly parse "%s"', (input, expectedFullMatch) => {
@@ -173,12 +173,12 @@ describe('cleanUUIdsAndIllegalChar', () => {
 });
 
 describe('capReferenceLength', () => {
-	it('should limite the size of a reference to 254 char', () => {
+	it('should limite the size of a reference to 50 char', () => {
 		const input = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially";
 
 		const output = capReferenceLength(input)
 
-		const expectedOutput = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has s";
+		const expectedOutput = "Lorem Ipsum is simply dummy text of the print";
 		expect(output).toBe(expectedOutput)
 
 	})

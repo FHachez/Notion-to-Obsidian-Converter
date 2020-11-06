@@ -3,7 +3,7 @@ import * as npath from 'path';
 import { getDirectoryContent } from './utils';
 import { convertMarkdownLinks } from './fix_md';
 import { convertCSVToMarkdown } from './notion_csv';
-import { sanatizeObsidianRefLink } from './regex';
+import { capReferenceLength, cleanUUIdsAndIllegalChar, fileExtensionRegex, sanatizeObsidianRefLink } from './regex';
 
 export interface FixNotionExportConfigI {
 	shouldProcessCsv: boolean
@@ -15,8 +15,13 @@ export interface FixNotionExportConfigI {
  * Removes the UUID of the path and resolve it to an absolute path
  */
 export const cleanFileNameForReferenceAndResolvePath = (name: string): string => {
-	const fileName = sanatizeObsidianRefLink(npath.basename(name))
-	return npath.resolve(`${npath.dirname(name)}/${fileName}`);
+	const extension = name.match(fileExtensionRegex);
+	const fileName = cleanUUIdsAndIllegalChar(npath.basename(name))
+	let sanatizedFileName = capReferenceLength(fileName)
+	if (extension && fileName !== sanatizedFileName) {
+		sanatizedFileName += extension[0]
+	}
+	return npath.resolve(`${npath.dirname(name)}/${sanatizedFileName}`);
 };
 
 const renameNonCsvFile = (file: string): string => {

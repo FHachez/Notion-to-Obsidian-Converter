@@ -1,6 +1,6 @@
-| refCol                                                                                                                                                                                                                                                             | col1  | col2                    | col3 |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----- | ----------------------- | ---- |
-| [[Ref 1]]                                                                                                                                                                                                                                                          | 10101 | . a b a b               | 4    |
-| [[F]]                                                                                                                                                                                                                                                              | 1     | 2                       | 3    |
-|                                                                                                                                                                                                                                                                    |       | [[File Name fakeUUUID]] |      |
-| [[Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has s]] |       |                         |      |
+| refCol                                            | col1  | col2                    | col3 |
+| ------------------------------------------------- | ----- | ----------------------- | ---- |
+| [[Ref1]]                                          | 10101 | . a b a b               | 4    |
+| [[F]]                                             | 1     | 2                       | 3    |
+|                                                   |       | [[File Name fakeUUUID]] |      |
+| [[A 5-step process for nearly anything 1) Explo]] |       |                         |      |

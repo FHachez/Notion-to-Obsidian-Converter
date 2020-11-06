@@ -56,7 +56,9 @@ The script searches through every path and removes the long UUID at the end of b
 
 ## Known issues
 
-- Notes with a very long title won't be properly linked. The main issue is that Notion cut the file name at a variable length for very long names.
+-   Notes with a very long title won't be properly linked. The main issue is that Notion cut the file name at a variable length around 50 characters for very long names.
+    -   That's why cut at 45 characters to have the same limit everywhere
+-   Notion remove the following characters, `"./*%<>:?`, from the file name and thus the links.
 
 ## Warning
 

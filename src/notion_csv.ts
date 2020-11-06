@@ -22,9 +22,15 @@ export const transformCellToLink = (cell: string) => {
 	if (!cell || cell === ' ' || cell === '') {
 		return cell;
 	}
+	console.log(cell)
 	// Remove \n because markdown table doesn't support multiline cells
-	cell = cell.replace(/\n/gi, ' ').replace(/  +/gi, ' ').trim();
+	// Notion doesn't count the new line as a space for the file name.
+	cell = cell.replace(/\n/gi, '').replace(/  +/gi, ' ').trim();
+	console.log(cell)
+	// Remove \n because markdown table doesn't support multiline cells
 	cell = sanatizeObsidianRefLink(cell)
+	console.log(cell)
+	// Remove \n because markdown table doesn't support multiline cells
 	return `[[${cell}]]`;
 }
 

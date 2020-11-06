@@ -15,15 +15,16 @@ describe('Integration: ConvertMarkdowLinks', () => {
 });
 
 const inputMarkdownLinkToExpectedValue = [
-	["[Mental/Models:I Find Repeatedly Useful - Gabriel Weinberg - Pocket](Mental%20Model%20(Master)%209046d23c4cd340f2854d889061e29548/Mental%20Models%20I%20Find%20Repeatedly%20Useful%20-%20Gabriel%20W%20460d555b62aa404eab75b7a3f188e96e.md)",
-		"[[Mental Models I Find Repeatedly Useful - Gabriel Weinberg - Pocket]]"],
+	["[Mental/Models:I Find Repeatedly Useful - Gab Weinberg - Pocket](Mental%20Model%20(Master)%209046d23c4cd340f2854d889061e29548/Mental%20Models%20I%20Find%20Repeatedly%20Useful%20-%20Gabriel%20W%20460d555b62aa404eab75b7a3f188e96e.md)",
+		"[[MentalModelsI Find Repeatedly Useful - Gab We]]"],
 	["[ test](https://www.notion.so/The-Page-Title-(N)-2d41ab7b61d14cec885357ab17d48536)",
 		"[[The Page Title (N)]]"],
 	["![Histograms and kernel density estimation KDE 2/untitled](Histograms and kernel density estimation KDE 2/untitled)",
 		"![Histograms and kernel density estimation KDE 2/untitled](Histograms and kernel density estimation KDE 2/untitled)"],
 	["[Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially](test.md)",
-		"[[Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has s]]"],
-]
+		"[[Lorem Ipsum is simply dummy text of the print]]"],
+	["[A 5-step process for nearly anything 1) Explore wi](d3ff636268ce4eceaccab28c7408dcb4.md)",
+		"[[A 5-step process for nearly anything 1) Explo]]"],
 ]
 
 describe('ConvertMarkdownLinks', () => {
@@ -54,7 +55,7 @@ describe('convertNotionLink', () => {
 
 const inputImageLinkToExpectedValue = [
 	["Page:Title%20c5ae5f01ba5d4fb9a94d13d99397100c/Image%20Name*test.png",
-		"Page Title/Image Name test.png"],
+		"PageTitle/Image Nametest.png"],
 ]
 
 describe('convertImagePath', () => {

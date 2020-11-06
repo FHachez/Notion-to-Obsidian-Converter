@@ -1,14 +1,15 @@
 import {
-	ObsidianIllegalNameRegex, URLRegex,
+	URLRegex,
 	getLinkTextWithSurroudingBracketMatches, getLinkTextWithPathMatches,
 	linkNotionRegex,
 	removeUUIDs,
 	replaceEncodedSpaceWithSpace,
 	cleanUUIdsAndIllegalChar,
-	sanatizeObsidianRefLink
+	sanatizeObsidianRefLink,
+	fileExtensionRegex
 } from './regex';
 import * as npath from 'path';
-import { hasAFileExtension, isNotMDOrCSVFile } from './utils';
+import { hasAFileExtension, hasFileExtensionInMDLink, isNotMDOrCSVFile } from './utils';
 
 type ObsidianReference = string;
 
@@ -41,8 +42,7 @@ export const convertMarkdownLinks = (content: string) => {
 				if (!linkTextWithBracket) continue;
 				// Remove the end ]( of the text match
 				let linkText = linkTextWithBracket[0].substring(1, linkTextWithBracket[0].length - 2);
-				// Before it was a simple include png, to see if still work
-				if (!hasAFileExtension(match)) {
+				if (!hasFileExtensionInMDLink(match)) {
 					replacement = removeUUIDs(replaceEncodedSpaceWithSpace(match))
 				} else if (isNotMDOrCSVFile(match)) {
 					replacement = `[[${convertImagePath(linkText)}]]`;
@@ -94,6 +94,7 @@ export const convertRelativePathToObsidianReference = (path: string): ObsidianRe
 	const fileName = npath.basename(path)
 	const fileNameWithoutUUID = sanatizeObsidianRefLink(replaceEncodedSpaceWithSpace(fileName));
 	return `[[${fileNameWithoutUUID.replace(/\..+$/, '')}]]`;
+	return `[[${fileNameWithoutUUID.replace(fileExtensionRegex, '')}]]`;
 };
 
 export const convertLinksIfMD = (link: string): ObsidianReference => {

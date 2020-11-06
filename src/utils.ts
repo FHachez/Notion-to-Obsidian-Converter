@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as npath from 'path';
+import { fileExtensionRegex } from './regex';
 
 export const isImageFile = (file: string): boolean => {
 	return file.endsWith('.png') || file.endsWith('.jpeg') || file.endsWith('.jpg');
@@ -8,8 +9,16 @@ export const isImageFile = (file: string): boolean => {
 /**
  * It ends with a dot and some characters".xyz"
  */
+export const hasFileExtensionInMDLink = (file: string): boolean => {
+	return /\.[0-9a-zA-Z]+\)$/.test(file);
+}
+
+/**
+ * It ends with a dot and some characters".xyz"
+ */
 export const hasAFileExtension = (file: string): boolean => {
-	return !!file.match(/\..+$/);
+	//return !!file.match(/\..+$/);
+	return fileExtensionRegex.test(file);
 }
 export const isNotMDOrCSVFile = (file: string): boolean => {
 	return !(file.includes('.md') || file.includes('.csv'));

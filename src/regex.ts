@@ -1,6 +1,8 @@
 export const ObsidianIllegalNameRegex = /[\*\"\/\<\>\:\|\?]/g;
 export const URLRegex = /(:\/\/)|(w{3})|(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/;
 
+export const fileExtensionRegex = /(\.[0-9a-z]+$)/;
+
 // Match paired paranteses: https://stackoverflow.com/questions/9580319/regular-expression-for-paired-brackets
 export const linkFullRegex = /(\[([^ \]].*?| [^\]]+?)\])\((?:(?!\(\(|\)\)).)+\)/gi;
 export const linkTextRegex = /(\[([^ \]].*?| [^\]]+?)\])(\()/gi;
@@ -36,12 +38,18 @@ export const replaceEncodedSpaceWithSpace = (content: string) => content.replace
 /**
  * Replace Illegal Obsidian Char with space
  */
-export const replaceIllegalObsidianCharWithSpace = (content: string) => content.replace(ObsidianIllegalNameRegex, ' ');
+export const removeIllegalObsidianChar = (content: string) => content.replace(ObsidianIllegalNameRegex, '');
 
-export const maxReferenceLength = 254
+/**
+ * Notion Cut at around 50 char + UUID the length of the file name
+ * We cut at 45 to make sure we take that into account.
+ */
+export const maxReferenceLength = 45
 export const capReferenceLength = (content: string) => {
+	// If there is a leading space we don't want to take it into account in the cut!
+	content = content.trim();
 	if (content.length > maxReferenceLength) {
-		return content.slice(0, maxReferenceLength);
+		return content.slice(0, maxReferenceLength).trim();
 	}
 	return content;
 }
@@ -49,7 +57,7 @@ export const capReferenceLength = (content: string) => {
 /**
  * Remove UUIDs and all the illegal char for the references. (Do not use on links or on paths)!!)
  */
-export const cleanUUIdsAndIllegalChar = (content: string) => replaceIllegalObsidianCharWithSpace(removeUUIDs(content))
+export const cleanUUIdsAndIllegalChar = (content: string) => removeIllegalObsidianChar(removeUUIDs(content))
 
 /**
  * Sanatize an Obsidian Ref Link

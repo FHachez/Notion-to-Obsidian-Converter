@@ -20,7 +20,7 @@ These won't be formated because it's not a markdown link:
 -   https://www.notion.so/0b30ec3dd5d749c1af516cebfabb9eb4
 -   https://google.com
 
-[ Action<Items:Database](<Action%20Zone%20(Template)%2064bc9287d193489d91f625d55f00db5a/Action%20Items%20Database%208a6c100dac24406b8511cb8b184cf78a.csv>)
+[ Action<Items:Database](<>Action%20Zone%20(Template)%2064bc9287d193489d91f625d55f00db5a/Action%20Items%20Database%208a6c100dac24406b8511cb8b184cf78a.csv)
 🎞️ **Content Creation Dashboard** **(add your link, [template available](https://www.notion.so/yearzero/Content-Machine-Template-371ee5a46e9e498b8f7d51f23e496c4e))**
 
 -   ["Vizualisation"](DBs%201c5c6855aa17434b95582b65e1b6c6f9/Concepts%20Facts%20DB%20509873978c5c4d1ab3002ee934ad4686/Vizualisation%201e798297b26f48568d3a88ab54e2a7da.md)
@@ -29,6 +29,6 @@ These won't be formated because it's not a markdown link:
 
     - [ ]  How am I going to execute today's tasks
 
-![Kaban%20Cumulative%20Flow%20Diagram%20(R)%200da56e5a29de45b183ac6bf22befc2e6/Untitled.png](<Kaban%20Cumulative%20Flow%20Diagram%20(R)%200da56e5a29de45b183ac6bf22befc2e6/Untitled.png>)
+![Kaban%20Cumulative%20Flow%20Diagram%20(R)%200da56e5a29de45b183ac6bf22befc2e6/Untitled.png](<>Kaban%20Cumulative%20Flow%20Diagram%20(R)%200da56e5a29de45b183ac6bf22befc2e6/Untitled.png)
 
 [Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.](test.md)
