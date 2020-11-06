@@ -30,3 +30,5 @@ export const optionalSpaceOrDashThenUUIDRegex = /[ \-]?[0-9a-f]{8}[0-9a-f]{4}[0-
  * Removes all UUIDs and it's leading space or -
  */
 export const removeUUIDs = (content: string) => content.replace(optionalSpaceOrDashThenUUIDRegex, "");
+
+export const replaceEncodedSpaceWithSpace = (content: string) => content.replace(/\%20/g, ' ')

@@ -68,6 +68,8 @@ const inputRelativePageToExpectedValue = [
 		"[[File Name]]"],
 	["File%20Name%20notA UUUID.md",
 		"[[File Name notA UUUID]]"],
+	["50% should work",
+		"[[50% should work]]"]
 ]
 
 describe('convertRelativePathToReference', () => {

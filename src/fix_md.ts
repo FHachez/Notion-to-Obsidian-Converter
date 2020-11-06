@@ -2,7 +2,8 @@ import {
 	ObsidianIllegalNameRegex, URLRegex,
 	getLinkTextWithSurroudingBracketMatches, getLinkTextWithPathMatches,
 	linkNotionRegex,
-	removeUUIDs
+	removeUUIDs,
+	replaceEncodedSpaceWithSpace
 } from './regex';
 import * as npath from 'path';
 import { hasAFileExtension, isNotMDOrCSVFile } from './utils';
@@ -40,7 +41,7 @@ export const convertMarkdownLinks = (content: string) => {
 				let linkText = linkTextWithBracket[0].substring(1, linkTextWithBracket[0].length - 2);
 				// Before it was a simple include png, to see if still work
 				if (!hasAFileExtension(match)) {
-					replacement = removeUUIDs(decodeURI(match))
+					replacement = removeUUIDs(replaceEncodedSpaceWithSpace(match))
 				} else if (isNotMDOrCSVFile(match)) {
 					replacement = `[[${convertImagePath(linkText)}]]`;
 				} else {
@@ -63,7 +64,7 @@ export const convertMarkdownLinks = (content: string) => {
  * Into `![Page Title/Image Name.png]`
  */
 export const convertImagePath = (path: string): string => {
-	const decodedPathWithoutUUID = removeUUIDs(decodeURI(path));
+	const decodedPathWithoutUUID = removeUUIDs(replaceEncodedSpaceWithSpace(path));
 
 	let imageTitle = npath.basename(decodedPathWithoutUUID);
 	let folder = npath.dirname(decodedPathWithoutUUID);
@@ -88,7 +89,7 @@ export const convertNotionLink = (match: string): ObsidianReference => {
  */
 export const convertRelativePathToObsidianReference = (path: string): ObsidianReference => {
 	const fileName = npath.basename(path)
-	const fileNameWithoutUUID = removeUUIDs(decodeURI(fileName));
+	const fileNameWithoutUUID = removeUUIDs(replaceEncodedSpaceWithSpace(fileName));
 	return `[[${fileNameWithoutUUID.replace(/\..+$/, '')}]]`;
 };
 
