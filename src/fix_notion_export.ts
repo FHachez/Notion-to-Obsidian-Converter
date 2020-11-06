@@ -16,11 +16,9 @@ export interface FixNotionExportConfigI {
  */
 export const cleanFileNameForReferenceAndResolvePath = (name: string): string => {
 	const extension = name.match(fileExtensionRegex);
-	console.log(extension)
 	const fileName = cleanUUIdsAndIllegalChar(npath.basename(name))
 	let sanatizedFileName = capReferenceLength(fileName.replace(fileExtensionRegex, ''))
 	if (extension && fileName !== sanatizedFileName) {
-		console.log(extension)
 		sanatizedFileName += extension[0]
 	}
 	return npath.resolve(`${npath.dirname(name)}/${sanatizedFileName}`);

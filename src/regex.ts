@@ -50,13 +50,10 @@ export const maxReferenceLength = 45
 export const capReferenceLength = (content: string) => {
 	// If there is a leading space we don't want to take it into account in the cut!
 	content = content.normalize("NFD")
-	console.log(content)
 	content = content.trim();
 	if (content.length > maxReferenceLength) {
 		content = content.slice(0, maxReferenceLength)
-		console.log(content)
 		content = content.replace(/^ +| +$/, '');
-		console.log(content)
 	}
 	return content;
 }
