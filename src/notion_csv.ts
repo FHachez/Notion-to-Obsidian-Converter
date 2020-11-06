@@ -4,7 +4,7 @@ import width from 'string-width'
 
 import { convertRelativePathToObsidianReference } from "./fix_md";
 import { Content } from './content';
-import { sanatizeObsidianRefLink } from './regex';
+import { capReferenceLength, cleanUUIdsAndIllegalChar, sanatizeObsidianRefLink } from './regex';
 
 export const processCSVCell = (cell: string) => {
 	// Remove \n because markdown table doesn't support multiline cells
@@ -25,9 +25,10 @@ export const transformCellToLink = (cell: string) => {
 	// Remove \n because markdown table doesn't support multiline cells
 	// Notion doesn't count the new line as a space for the file name.
 	// Notion also remove the "." from the references
+	cell = cleanUUIdsAndIllegalChar(cell);
 	cell = cell.replace(/\n|\./gi, '').replace(/  +/gi, ' ').trim();
 
-	cell = sanatizeObsidianRefLink(cell)
+	cell = capReferenceLength(cell)
 
 	return `[[${cell}]]`;
 }
