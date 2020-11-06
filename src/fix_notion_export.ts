@@ -31,7 +31,7 @@ const renameNonCsvFile = (file: string): string | null => {
 
 	const truncatedFileName = cleanFileNameForReferenceAndResolvePath(file);
 	if (fs.existsSync(truncatedFileName)) {
-		return file;
+		return null;
 	} else {
 		fs.renameSync(file, truncatedFileName);
 		truncatedFileName;
@@ -110,6 +110,11 @@ const removeDirIfEmpty = (dir: string) => {
 	}
 }
 
+export const moveFileAndCreateFolders = (from: string, to: string) => {
+	fs.mkdirSync(npath.dirname(to), { recursive: true })
+	console.log(`Move ${from} -> ${to}`)
+	fs.renameSync(from, to)
+}
 
 // Recursively fix the export
 export const fixNotionExport = (path: string, config: FixNotionExportConfigI) => {
@@ -122,7 +127,8 @@ export const fixNotionExport = (path: string, config: FixNotionExportConfigI) =>
 		if (config.shouldProcessMdFiles) {
 			const newName = renameNonCsvFile(file);
 			if (!newName) {
-				console.log(`${newName} is a duplicated csv`)
+				console.log(`${file} is a duplicated non csv`)
+				moveFileAndCreateFolders(file, file.replace(config.input_dir, config.duplicates_dir + '/'))
 				continue
 			} else {
 				file = newName

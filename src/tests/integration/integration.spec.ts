@@ -50,8 +50,11 @@ function printDiff(result: dircompare.Result) {
 
 	if (result.diffSet) {
 		const differences = result.diffSet.filter((d) => d.state !== 'equal')
-		differences.forEach(dif => console.log('Difference - name1: %s, type1: %s, name2: %s, type2: %s, state: %s',
-			dif.name1, dif.type1, dif.name2, dif.type2, dif.state))
+		differences.forEach(dif => {
+			console.log(
+				`Difference - name1: ${dif.path1}${dif.name1}, type1: ${dif.type1}, name2: ${dif.name2}, type2: ${dif.type2}, state: ${dif.state}`
+			)
+		})
 
 		differences.filter(d => d.reason === 'different-content').forEach(d => {
 			console.log(`--- Diff for files: ${d.name1} and ${d.name2} have different content ----`)

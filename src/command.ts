@@ -1,11 +1,15 @@
 import inquirer from 'inquirer';
 import { fixNotionExport, FixNotionExportConfigI } from './fix_notion_export';
+import * as npath from 'path';
 
 function processPath({ inputFolder, shouldProcessCsv, shouldProcessMdFiles, shouldRemoveLinkedDb = false }: FixNotionExportConfigI & { inputFolder: string }) {
 	const start = Date.now();
 	const output = fixNotionExport(inputFolder.trim(), {
-		shouldProcessCsv, shouldProcessMdFiles, shouldRemoveLinkedDb,
-		input_dir: inputFolder, duplicates_dir: inputFolder + "/__duplicates__"
+		shouldProcessCsv,
+		shouldProcessMdFiles,
+		shouldRemoveLinkedDb,
+		input_dir: npath.resolve(inputFolder),
+		duplicates_dir: npath.resolve(inputFolder + "/__duplicates__"),
 	});
 	const elapsed = Date.now() - start;
 
