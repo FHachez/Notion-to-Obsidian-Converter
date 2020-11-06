@@ -1,7 +1,5 @@
 import fs from 'fs';
-import { convertImagePath, convertMarkdownLinks, convertNotionLink, convertRelativePathToObsidianReference, truncateDirName, truncateFileName } from '../fix_md';
-
-const currentDir = process.cwd()
+import { convertImagePath, convertMarkdownLinks, convertNotionLink, convertRelativePathToObsidianReference } from '../fix_md';
 
 describe('Integration: ConvertMarkdowLinks', () => {
 	it('should correctly convert csv with multiline cells', () => {
@@ -32,34 +30,6 @@ describe('ConvertMarkdownLinks', () => {
 	})
 });
 
-
-const fileNameToTruncateWithExpectedValues = [
-	["test/Concepts Facts DB 509873978c5c4d1ab3002ee934ad4686.md", currentDir + "/test/Concepts Facts DB.md"],
-	["/full/feedback (N) b0ab9f2e031f4fe79f6214cd876dbdf5.md", "/full/feedback (N).md"]
-]
-describe('truncateFileName', () => {
-	it.each(fileNameToTruncateWithExpectedValues)(
-		'It should truncate path %s into %s', (input, expected) => {
-			const output = truncateFileName(input)
-
-			expect(output).toBe(expected)
-
-		})
-});
-
-const dirNameToTruncateWithExpectedValues = [
-	["test/Concepts Facts DB 509873978c5c4d1ab3002ee934ad4686", currentDir + "/test/Concepts Facts DB"],
-	["/full/feedback (N) b0ab9f2e031f4fe79f6214cd876dbdf5.md", "/full/feedback (N)"]
-]
-describe('truncateDirName', () => {
-	it.each(dirNameToTruncateWithExpectedValues)(
-		'It should truncate path %s into %s', (input, expected) => {
-			const output = truncateDirName(input)
-
-			expect(output.toString()).toEqual(expected)
-
-		})
-});
 
 const inputNotionURLLinkToExpectedValue = [
 	["https://www.notion.so/The-Page-Title-2d41ab7b61d14cec885357ab17d48536",

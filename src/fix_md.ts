@@ -9,31 +9,6 @@ import { hasAFileExtension, isNotMDOrCSVFile } from './utils';
 
 type ObsidianReference = string;
 
-export const truncateFileName = (name: string): string => {
-	// return fileName.substring(0, fileName.lastIndexOf(' ')) + fileName.substring(fileName.indexOf('.'));
-	let basename = npath.basename(name);
-	basename = basename.lastIndexOf(' ') > 0 ? basename.substring(0, basename.lastIndexOf(' ')) : basename;
-	// Todo, we shouldn't have to resolve the file name.
-	return npath.resolve(
-		npath.format({
-			dir: npath.dirname(name),
-			base: basename + npath.extname(name),
-		})
-	);
-};
-
-export const truncateDirName = (name: string): string => {
-	//return name.substring(0, name.lastIndexOf(' '));
-	let basename = npath.basename(name);
-	basename = basename.lastIndexOf(' ') > 0 ? basename.substring(0, basename.lastIndexOf(' ')) : basename;
-	return npath.resolve(
-		npath.format({
-			dir: npath.dirname(name),
-			base: basename,
-		})
-	);
-};
-
 //* [Link Text](Link Directory + uuid/And Page Name + uuid) => [[LinkText]]
 export const convertMarkdownLinks = (content: string) => {
 

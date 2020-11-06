@@ -1,9 +1,10 @@
 import * as fs from 'fs';
 import * as npath from 'path';
 import { getDirectoryContent } from './utils';
-import { convertMarkdownLinks, truncateDirName, truncateFileName } from './fix_md';
+import { convertMarkdownLinks } from './fix_md';
 import { convertCSVToMarkdown } from './notion_csv';
 import { dir } from 'console';
+import { removeUUIDs } from './regex';
 
 export interface FixNotionExportConfigI {
 	shouldProcessCsv: boolean
@@ -11,11 +12,17 @@ export interface FixNotionExportConfigI {
 	shouldRemoveLinkedDb: boolean
 }
 
+/**
+ * Removes the UUID of the path and resolve it to an absolute path
+ */
+export const removeUUIDAndResolvePath = (name: string): string => {
+	return npath.resolve(removeUUIDs(name));
+};
 
 const renameNonCsvFile = (file: string): string => {
 	if (file.endsWith('.csv')) return file;
 
-	const truncatedFileName = truncateFileName(file);
+	const truncatedFileName = removeUUIDAndResolvePath(file);
 	if (fs.existsSync(truncatedFileName)) {
 		console.log(`Already moved a note called ${truncatedFileName}`);
 		return file
@@ -42,7 +49,7 @@ const processIfCsv = (file: string): number => {
 		const csvContent = fs.readFileSync(file, 'utf8');
 		const csvContentAsMarkdown = convertCSVToMarkdown(csvContent);
 		fs.writeFileSync(
-			truncateFileName(file.replace(/.csv$/, '.md')),
+			removeUUIDAndResolvePath(file.replace(/.csv$/, '.md')),
 			csvContentAsMarkdown.content,
 			'utf8'
 		);
@@ -54,7 +61,7 @@ const processIfCsv = (file: string): number => {
 
 const renameDirs = (directories: string[]): string[] => {
 	return directories.map((dir) => {
-		const newDirName = truncateDirName(dir)
+		const newDirName = removeUUIDAndResolvePath(dir)
 		if (fs.existsSync(newDirName)) {
 			console.log(`Already moved a note with subnotes called ${dir}`);
 			return dir;
