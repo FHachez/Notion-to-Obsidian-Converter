@@ -18,7 +18,9 @@ const inputMarkdownLinkToExpectedValue = [
 	["[Mental Models I Find Repeatedly Useful - Gabriel Weinberg - Pocket](Mental%20Model%20(Master)%209046d23c4cd340f2854d889061e29548/Mental%20Models%20I%20Find%20Repeatedly%20Useful%20-%20Gabriel%20W%20460d555b62aa404eab75b7a3f188e96e.md)",
 		"[[Mental Models I Find Repeatedly Useful - Gabriel Weinberg - Pocket]]"],
 	["[ test](https://www.notion.so/The-Page-Title-(N)-2d41ab7b61d14cec885357ab17d48536)",
-		"[[The Page Title (N)]]"]
+		"[[The Page Title (N)]]"],
+	["![Histograms and kernel density estimation KDE 2/untitled](Histograms and kernel density estimation KDE 2/untitled)",
+		"![Histograms and kernel density estimation KDE 2/untitled](Histograms and kernel density estimation KDE 2/untitled)"]
 ]
 
 describe('ConvertMarkdownLinks', () => {

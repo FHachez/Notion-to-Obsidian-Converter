@@ -1,10 +1,11 @@
 import {
 	ObsidianIllegalNameRegex, URLRegex,
 	getLinkTextWithSurroudingBracketMatches, getLinkTextWithPathMatches,
-	linkNotionRegex
+	linkNotionRegex,
+	removeUUIDs
 } from './regex';
 import * as npath from 'path';
-import { isNotMDOrCSVFile } from './utils';
+import { hasAFileExtension, isNotMDOrCSVFile } from './utils';
 
 type ObsidianReference = string;
 
@@ -54,6 +55,7 @@ export const convertMarkdownLinks = (content: string) => {
 					replacement = convertNotionLink(url[0]);
 					out = out.replace(match, replacement);
 				} else {
+					// We don't touch non notion links!
 					continue
 				}
 			} else {
@@ -62,7 +64,9 @@ export const convertMarkdownLinks = (content: string) => {
 				// Remove the end ]( of the text match
 				let linkText = linkTextWithBracket[0].substring(1, linkTextWithBracket[0].length - 2);
 				// Before it was a simple include png, to see if still work
-				if (isNotMDOrCSVFile(match)) {
+				if (!hasAFileExtension(match)) {
+					replacement = removeUUIDs(decodeURI(match))
+				} else if (isNotMDOrCSVFile(match)) {
 					replacement = `[[${convertImagePath(linkText)}]]`;
 				} else {
 					replacement = `[[${linkText.replace(ObsidianIllegalNameRegex, ' ')}]]`;

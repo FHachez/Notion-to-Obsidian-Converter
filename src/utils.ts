@@ -5,6 +5,12 @@ export const isImageFile = (file: string): boolean => {
 	return file.endsWith('.png') || file.endsWith('.jpeg') || file.endsWith('.jpg');
 }
 
+/**
+ * It ends with a dot and some characters".xyz"
+ */
+export const hasAFileExtension = (file: string): boolean => {
+	return !!file.match(/\..+$/);
+}
 export const isNotMDOrCSVFile = (file: string): boolean => {
 	return !(file.includes('.md') || file.includes('.csv'));
 }

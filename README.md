@@ -26,8 +26,12 @@ The script searches through every path and removes the long UUID at the end of b
 **Conversion Features:**
 
 -   Markdown links are converted from `[Link Text](Notion\Link\Path)` to `[[Link Text]]`. It isn't perfect due to name collision, but it works for most links. Some links are `www.notion.so` links when they're related table records and those are converted from `https://www.notion.so/The-Page-Title-2d41ab7b61d14cec885357ab17d48536` to `[[The Page Title]]`.
+-   Links to a file with no extension (.md, .png, ...) or notion url, are not transformed to an Obsidian link (Obsidian doesn't detect them correctly and put them on the grap...):
 
--   After CSV's have their links corrected a secondary Markdown file is made with the same name with all of its contents converted into a Markdown table (multiline values are converted to single line because of Markdown table limitations)
+    -   `![Histograms%20c15c33d1f1aa4c88bfd9ba2ac1da4b4a/untitled](Histograms%20%202%20c15c33d1f1aa4c88bfd9ba2ac1da4b4a/untitled)`
+    -   to `![Histograms/untitled](Histograms/untitled)`
+
+-   After CSV's have their links corrected a secondary Markdown file is made with the same name with all of its contents converted into a Markdown table (multiline values are converted to single line because of Markdown table limitations).
 
 -   URL links found in Markdown are left as-is: `[Link Text](URL)` because Obsidian renders these correctly. The signifier for a "valid URL" is just containing `://` or being an IP, so it captures `http://`, `https://` and other networks like `ipfs://` as well as `xxx.xxx.xxx.xxx` for IPs.
 
