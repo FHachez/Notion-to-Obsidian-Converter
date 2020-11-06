@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { convertImagePath, convertMarkdownLinks, convertNotionLink, convertRelativePathToReference, truncateDirName, truncateFileName } from '../fix_md';
+import { convertImagePath, convertMarkdownLinks, convertNotionLink, convertRelativePathToObsidianReference, truncateDirName, truncateFileName } from '../fix_md';
 
 const currentDir = process.cwd()
 
@@ -94,16 +94,16 @@ describe('convertImagePath', () => {
 });
 
 const inputRelativePageToExpectedValue = [
-	["Page%20Title%20c5ae5f01ba5d4fb9a94d13d99397100c/File%20Name%20azaUUUID.md",
+	["Page%20Title%20c5ae5f01ba5d4fb9a94d13d99397100c/File%20Name%2020c5ae5f01ba5d4fb9a94d13d9939710.md",
 		"[[File Name]]"],
-	["File%20Name%20azaUUUID.md",
-		"[[File Name]]"],
+	["File%20Name%20notA UUUID.md",
+		"[[File Name notA UUUID]]"],
 ]
 
 describe('convertRelativePathToReference', () => {
 	it.each(inputRelativePageToExpectedValue)('should correctly parse "%s"', (input, expected) => {
 
-		const output = convertRelativePathToReference(input)
+		const output = convertRelativePathToObsidianReference(input)
 
 		expect(output).toBe(expected)
 	})

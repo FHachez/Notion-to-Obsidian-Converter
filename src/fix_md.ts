@@ -90,7 +90,7 @@ export const convertImagePath = (path: string): string => {
 		.split('%20')
 		.join(' ');
 
-	path = convertRelativePathToReference(path.substring(0, path.lastIndexOf('/')));
+	path = convertRelativePathToObsidianReference(path.substring(0, path.lastIndexOf('/')));
 	path = path.substring(2, path.length - 2);
 
 	return `${path}/${imageTitle}`;
@@ -98,22 +98,22 @@ export const convertImagePath = (path: string): string => {
 
 //* `https://www.notion.so/The-Page-Title-2d41ab7b61d14cec885357ab17d48536` => `[[The Page Title]]`
 export const convertNotionLink = (match: string): ObsidianReference => {
-	return decodeURI(`[[${match
-		.substring(match.lastIndexOf('/') + 1)
-		.split('-')
-		.slice(0, -1)
-		.join(' ')}]]`);
+	const urlWithoutUUID = removeUUIDs(match)
+	return decodeURI(`[[${urlWithoutUUID
+		.substring(match.lastIndexOf('/') + 1).replace(/-/g, ' ')}]]`);
 };
 
 //Removes the leading directory and uuid at the end, leaving the page title
 //* `The%20Page%20Title%200637657f8a854e05a142871cce86ff701` => `[[Page Title]]
-export const convertRelativePathToReference = (path: string): ObsidianReference => {
-	return `[[${(path.split('/').pop() || path).split('%20').slice(0, -1).join(' ')}]]`;
+export const convertRelativePathToObsidianReference = (path: string): ObsidianReference => {
+	const fileName = npath.basename(path)
+	const fileNameWithoutUUID = removeUUIDs(decodeURI(fileName));
+	return `[[${fileNameWithoutUUID.replace(/\..+$/, '')}]]`;
 };
 
 export const convertLinksIfMD = (link: string): ObsidianReference => {
 	if (link.includes('.md')) {
-		return convertRelativePathToReference(link);
+		return convertRelativePathToObsidianReference(link);
 	}
 	return link
 

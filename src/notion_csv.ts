@@ -2,14 +2,14 @@ import { parse } from 'papaparse';
 import markdownTable from 'markdown-table';
 import width from 'string-width'
 
-import { convertRelativePathToReference } from "./fix_md";
+import { convertRelativePathToObsidianReference } from "./fix_md";
 import { Content } from './content';
 
 export const processCSVCell = (cell: string) => {
 	// Remove \n because markdown table doesn't support multiline cells
 	cell = cell.replace(/\n/gi, ' ').replace(/  +/gi, ' ').trim();
 	if (cell.includes('.md')) {
-		cell = convertRelativePathToReference(cell);
+		cell = convertRelativePathToObsidianReference(cell);
 	}
 	return cell
 }
