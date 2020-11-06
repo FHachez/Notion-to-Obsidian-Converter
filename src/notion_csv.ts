@@ -4,6 +4,7 @@ import width from 'string-width'
 
 import { convertRelativePathToObsidianReference } from "./fix_md";
 import { Content } from './content';
+import { removeUUIDs } from './regex';
 
 export const processCSVCell = (cell: string) => {
 	// Remove \n because markdown table doesn't support multiline cells
@@ -14,16 +15,30 @@ export const processCSVCell = (cell: string) => {
 	return cell
 }
 
+/**
+ * Tranform a cell to an Obsidian Link
+ */
+export const transformCellToLink = (cell: string) => {
+	if (!cell || cell === ' ' || cell === '') {
+		return cell;
+	}
+	// Remove \n because markdown table doesn't support multiline cells
+	cell = removeUUIDs(cell).replace(/\n/gi, ' ').replace(/  +/gi, ' ').trim();
+	return `[[${cell}]]`;
+}
+
 //Goes through each link inside of CSVs and converts them
 export const convertCSVToMarkdown = (content: string): Content => {
-	const parsedContent = parse<Record<string, string>>(content, { header: true });
+	const parsedContent = parse<string[]>(content);
 	if (!parsedContent.data.length) {
 		console.log(`No Data ${content}`)
 		return { content: "", links: 0 }
 	}
-	const header = Object.keys(parsedContent.data[0])
-	const dataWithoutColumns = parsedContent.data.map((r) => {
-		return header.map((c) => r[c]).map(processCSVCell);
+	const header = parsedContent.data[0]
+
+	const dataWithoutColumns = parsedContent.data.slice(1).map((r) => {
+		const firstCell = transformCellToLink(r[0]);
+		return [firstCell].concat(r.slice(1).map(processCSVCell));
 	})
 
 	return {

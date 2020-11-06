@@ -1,8 +1,8 @@
-col1,col2,col3
-"10101"," .    a
+refCol,col1,col2,col3
+Ref1,"10101"," .    a
 b
 
 a
 b","4"
-1,2,3
-,"File%20Name%20fakeUUUID%2020c5ae5f01ba5d4fb9a94d13d9939710.md",
+"F20c5ae5f01ba5d4fb9a94d13d9939710",1,2,3
+,,"File%20Name%20fakeUUUID%2020c5ae5f01ba5d4fb9a94d13d9939710.md",

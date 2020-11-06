@@ -12,7 +12,6 @@ describe('ConvertCSVToMarkdown', () => {
 
 		// VScode is adding a new line at the end of the expected file.
 		output.content += '\n'
-
 		expect(fs.readFileSync(__dirname + '/expected_fake.md').toString()).toBe(output.content);
 	})
 });

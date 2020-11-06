@@ -33,6 +33,8 @@ The script searches through every path and removes the long UUID at the end of b
 
 -   After CSV's have their links corrected a secondary Markdown file is made with the same name with all of its contents converted into a Markdown table (multiline values are converted to single line because of Markdown table limitations).
 
+    -   The first column is transformed to an Obsidian Reference. It's generally the name of the document.
+
 -   URL links found in Markdown are left as-is: `[Link Text](URL)` because Obsidian renders these correctly. The signifier for a "valid URL" is just containing `://` or being an IP, so it captures `http://`, `https://` and other networks like `ipfs://` as well as `xxx.xxx.xxx.xxx` for IPs.
 
 -   If a link contains illegal characters `*"/\<>:|?` the character is replaced with a space.
