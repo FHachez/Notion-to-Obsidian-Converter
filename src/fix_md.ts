@@ -4,7 +4,8 @@ import {
 	linkNotionRegex,
 	removeUUIDs,
 	replaceEncodedSpaceWithSpace,
-	cleanUUIdsAndIllegalChar
+	cleanUUIdsAndIllegalChar,
+	sanatizeObsidianRefLink
 } from './regex';
 import * as npath from 'path';
 import { hasAFileExtension, isNotMDOrCSVFile } from './utils';
@@ -46,7 +47,7 @@ export const convertMarkdownLinks = (content: string) => {
 				} else if (isNotMDOrCSVFile(match)) {
 					replacement = `[[${convertImagePath(linkText)}]]`;
 				} else {
-					replacement = `[[${cleanUUIdsAndIllegalChar(linkText)}]]`;
+					replacement = `[[${sanatizeObsidianRefLink(linkText)}]]`;
 				}
 				out = out.replace(match, replacement);
 			}
@@ -68,7 +69,8 @@ export const convertImagePath = (path: string): string => {
 	const decodedPathWithoutUUID = removeUUIDs(replaceEncodedSpaceWithSpace(path));
 
 	let imageTitle = cleanUUIdsAndIllegalChar(npath.basename(decodedPathWithoutUUID));
-	let folder = cleanUUIdsAndIllegalChar(npath.dirname(decodedPathWithoutUUID));
+	// The folder corresponds to the title of a note next to the folder
+	let folder = sanatizeObsidianRefLink(npath.dirname(decodedPathWithoutUUID));
 
 	return `${folder}/${imageTitle}`;
 };
@@ -90,7 +92,7 @@ export const convertNotionLink = (match: string): ObsidianReference => {
  */
 export const convertRelativePathToObsidianReference = (path: string): ObsidianReference => {
 	const fileName = npath.basename(path)
-	const fileNameWithoutUUID = removeUUIDs(replaceEncodedSpaceWithSpace(fileName));
+	const fileNameWithoutUUID = sanatizeObsidianRefLink(replaceEncodedSpaceWithSpace(fileName));
 	return `[[${fileNameWithoutUUID.replace(/\..+$/, '')}]]`;
 };
 

@@ -38,7 +38,23 @@ export const replaceEncodedSpaceWithSpace = (content: string) => content.replace
  */
 export const replaceIllegalObsidianCharWithSpace = (content: string) => content.replace(ObsidianIllegalNameRegex, ' ');
 
+export const maxReferenceLength = 254
+export const capReferenceLength = (content: string) => {
+	if (content.length > maxReferenceLength) {
+		return content.slice(0, maxReferenceLength);
+	}
+	return content;
+}
+
 /**
  * Remove UUIDs and all the illegal char for the references. (Do not use on links or on paths)!!)
  */
 export const cleanUUIdsAndIllegalChar = (content: string) => replaceIllegalObsidianCharWithSpace(removeUUIDs(content))
+
+/**
+ * Sanatize an Obsidian Ref Link
+ * - Limit length
+ * - Remove UUIDs
+ * - Remove all the illegal char for the references. (Do not use on links or on paths)!!)
+ */
+export const sanatizeObsidianRefLink = (content: string) => capReferenceLength(cleanUUIdsAndIllegalChar(content))

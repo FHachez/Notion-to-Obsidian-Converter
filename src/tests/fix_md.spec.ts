@@ -4,11 +4,13 @@ import { convertImagePath, convertMarkdownLinks, convertNotionLink, convertRelat
 describe('Integration: ConvertMarkdowLinks', () => {
 	it('should correctly convert csv with multiline cells', () => {
 		const inputFile = __dirname + '/md/test_input.md';
-		const inputContent = fs.readFileSync(inputFile).toString()
+		const inputContent = fs.readFileSync(inputFile).toString();
 
-		const output = convertMarkdownLinks(inputContent)
+		const output = convertMarkdownLinks(inputContent);
 
-		expect(fs.readFileSync(__dirname + '/md/expected_output.md').toString()).toBe(output.content);
+		const expectedOutput = fs.readFileSync(__dirname + '/md/expected_output.md').toString();
+
+		expect(output.content).toBe(expectedOutput);
 	})
 });
 
@@ -18,7 +20,10 @@ const inputMarkdownLinkToExpectedValue = [
 	["[ test](https://www.notion.so/The-Page-Title-(N)-2d41ab7b61d14cec885357ab17d48536)",
 		"[[The Page Title (N)]]"],
 	["![Histograms and kernel density estimation KDE 2/untitled](Histograms and kernel density estimation KDE 2/untitled)",
-		"![Histograms and kernel density estimation KDE 2/untitled](Histograms and kernel density estimation KDE 2/untitled)"]
+		"![Histograms and kernel density estimation KDE 2/untitled](Histograms and kernel density estimation KDE 2/untitled)"],
+	["[Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially](test.md)",
+		"[[Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has s]]"],
+]
 ]
 
 describe('ConvertMarkdownLinks', () => {

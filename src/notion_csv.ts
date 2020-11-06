@@ -4,7 +4,7 @@ import width from 'string-width'
 
 import { convertRelativePathToObsidianReference } from "./fix_md";
 import { Content } from './content';
-import { cleanUUIdsAndIllegalChar } from './regex';
+import { sanatizeObsidianRefLink } from './regex';
 
 export const processCSVCell = (cell: string) => {
 	// Remove \n because markdown table doesn't support multiline cells
@@ -24,7 +24,7 @@ export const transformCellToLink = (cell: string) => {
 	}
 	// Remove \n because markdown table doesn't support multiline cells
 	cell = cell.replace(/\n/gi, ' ').replace(/  +/gi, ' ').trim();
-	cell = cleanUUIdsAndIllegalChar(cell)
+	cell = sanatizeObsidianRefLink(cell)
 	return `[[${cell}]]`;
 }
 

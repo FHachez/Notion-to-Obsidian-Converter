@@ -54,6 +54,10 @@ The script searches through every path and removes the long UUID at the end of b
     -   Windows can't handle large paths.
     -   I'm thinking about transforming them in shorter "UUID" like using the first 8 char of the UUID
 
+## Known issues
+
+- Notes with a very long title won't be properly linked. The main issue is that Notion cut the file name at a variable length for very long names.
+
 ## Warning
 
 This script transform the folder to make it work in Obsidian.

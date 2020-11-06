@@ -30,3 +30,5 @@ These won't be formated because it's not a markdown link:
     - [ ]  How am I going to execute today's tasks
 
 ![[Kaban Cumulative Flow Diagram (R)/Untitled.png]]
+
+[[Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has s]]

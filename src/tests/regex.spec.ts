@@ -1,6 +1,6 @@
 import { TupleExpression } from '@babel/types';
 import { execFile } from 'child_process';
-import { getLinkTextWithSurroudingBracketMatches, getLinkTextWithPathMatches, getNotionMatches, removeUUIDs, cleanUUIdsAndIllegalChar } from '../regex';
+import { getLinkTextWithSurroudingBracketMatches, getLinkTextWithPathMatches, getNotionMatches, removeUUIDs, cleanUUIdsAndIllegalChar, capReferenceLength } from '../regex';
 
 
 describe('getLinkTextWithPathMatches', () => {
@@ -171,3 +171,15 @@ describe('cleanUUIdsAndIllegalChar', () => {
 		expect(output).toBe(expectedFullMatch)
 	})
 });
+
+describe('capReferenceLength', () => {
+	it('should limite the size of a reference to 254 char', () => {
+		const input = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially";
+
+		const output = capReferenceLength(input)
+
+		const expectedOutput = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has s";
+		expect(output).toBe(expectedOutput)
+
+	})
+})
